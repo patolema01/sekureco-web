@@ -52,18 +52,20 @@
   setInterval(tick, 1000);
 })();
 
-// Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar
-// (y como mínimo 3 balazos y ~1 s del último espiral: sale a los 2,7 s). Si a los 2,3 s
-// ya cargó, se corta el fuego ("cease") para que no salga la 4ª bala. Al terminar,
-// SEKURECO y el escudo se achican y viajan cada uno a su lugar en el header (transición
-// FLIP con Web Animations, permitida por la CSP) mientras el fondo se desvanece.
-// Se salta con un toque o una tecla.
+// Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar (y como
+// mínimo 3 balazos: el vuelo sale 3,0 s después de que arranca la animación, con el
+// espiral del último impacto ya apagado). Si a los 2,2 s ya cargó, se corta el fuego
+// ("cease") para que no se vea nada del 4º disparo. Los tiempos se cuentan desde el
+// arranque real de las animaciones, no desde la navegación: en un celular el primer
+// render puede llegar 1 s o más tarde. Al terminar, SEKURECO y el escudo se achican y
+// viajan cada uno a su lugar en el header (transición FLIP con Web Animations,
+// permitida por la CSP) mientras el fondo se desvanece. Se salta con un toque o una tecla.
 (function () {
   "use strict";
   var ov = document.getElementById("intro");
   var root = document.documentElement;
   if (!ov || !root.classList.contains("intro")) return;
-  var MIN = 2700, CEASE = 2300, FLY = 950, done = false, loaded = document.readyState === "complete";
+  var MIN = 3000, CEASE = 2200, FLY = 950, done = false, loaded = document.readyState === "complete";
   var EASE = "cubic-bezier(.65, 0, .25, 1)";
   // bloquea el scroll mientras dura la intro; lo pone este script, así sin JS no hay bloqueo
   root.classList.add("intro-lock");
@@ -119,16 +121,40 @@
     setTimeout(headerSequence, FLY + 30);
   }
 
+  // t0: arranque real de las animaciones de la intro, en ms de document.timeline (el
+  // mismo reloj que performance.now()). Respaldo: el momento en que corre este script.
+  var T_JS = performance.now(), t0 = null;
+
   function check() {
-    if (!loaded) return;
-    var left = MIN - performance.now();
+    if (!loaded || t0 === null) return;
+    var left = t0 + MIN - performance.now();
     if (left <= 0) end(); else setTimeout(check, left);
   }
-  // la 4ª bala sale a volar a los ~2,37 s: si ya cargó, se corta el fuego antes;
-  // si no, el fuego sigue hasta que cargue
-  setTimeout(function () {
-    if (loaded && !done) ov.classList.add("cease");
-  }, Math.max(0, CEASE - performance.now()));
+
+  function anclar(t) {
+    if (t0 !== null) return;
+    t0 = t;
+    // el 4º impacto caería a los 2,70 s: si ya cargó, a los 2,2 s se corta el fuego;
+    // si no, sigue hasta que cargue
+    setTimeout(function () {
+      if (loaded && !done) ov.classList.add("cease");
+    }, Math.max(0, t0 + CEASE - performance.now()));
+    check();
+  }
+
+  // startTime existe recién cuando la animación arrancó de verdad (primer render): "ready"
+  var b0 = ov.querySelector(".b0");
+  var anim = b0 && b0.getAnimations && b0.getAnimations()[0];
+  if (anim && anim.ready) {
+    anim.ready.then(function (a) { anclar(a.startTime !== null ? a.startTime : T_JS); },
+                    function () { anclar(T_JS); });
+  } else {
+    anclar(T_JS);
+  }
+  // si la animación nunca arranca (p. ej. pestaña en segundo plano), que la página no
+  // quede bloqueada: a los 8 s, como la red de seguridad del CSS, se ancla al respaldo
+  setTimeout(function () { anclar(T_JS); }, 8000);
+
   window.addEventListener("load", function () { loaded = true; check(); });
   ov.addEventListener("click", end);
   document.addEventListener("keydown", function onKey(e) {

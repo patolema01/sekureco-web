@@ -549,9 +549,13 @@ html.intro-lock { overflow: hidden; }
 .intro .top .logo-wm, .intro .top .logo-shield { visibility: hidden; }
 /* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
 .leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip { opacity: 0; transition: opacity .25s ease; }
-/* a los 2,3 s, si ya cargó, main.js corta el fuego: la 4ª bala (sale a los ~2,37 s) no se ve;
-   las esquirlas del 3er impacto terminan su recorrido */
-.cease .bl { visibility: hidden; }   /* visibility y no opacity: la animación "bullet" pisa la opacidad */
+/* a los 2,2 s desde el arranque de la animación, si ya cargó, main.js corta el fuego:
+   no se ve nada del 4º disparo en adelante (bala, fragmentos, esquirlas ni sacudida);
+   lo del 3er impacto termina su recorrido. visibility y no opacity: las animaciones
+   de cada pieza pisan la opacidad */
+.cease .bl { visibility: hidden; }
+.cease .late { visibility: hidden; }
+.cease .sk3, .cease .sk4, .cease .sk5 { animation: none; }
 .leaving .beat, .leaving .beat g, .leaving .beat-r { animation: none !important; }
 .intro-skip {
   position: absolute;
