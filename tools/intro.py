@@ -173,12 +173,21 @@ ws = 520 / ww; wx = CX - 270; base = 770 + capH * ws
 
 sh_inner = shield("ld", "currentColor", "var(--acc)", shx, shy, s).replace('fill="var(--acc)"', 'class="la"')
 
+# viewBox ajustado al escudo (los fragmentos desbordan con overflow visible): así el
+# escudo mide exactamente lo que mide el <svg> y se alinea con SEKURECO.
+# {{WORDMARK}} lo reemplaza apply.py con el mismo SEKURECO del header, para que la
+# transición al header calce al píxel.
+vb = f"{shx - 6:.0f} {shy - 6:.0f} {732 * s + 12:.0f} {840 * s + 12:.0f}"
 svg = f'''<div class="intro-ov" id="intro" aria-hidden="true">
-  <svg class="intro-svg" viewBox="0 0 1000 1000" focusable="false">
-    <g class="beat">{''.join(shakes_open)}<g class="sh-in">{sh_inner}</g>{''.join(shakes_close)}</g>
-    <g transform="translate({CX} {CY})"><g class="beat-r">{''.join(bursts)}</g></g>
-    <g transform="translate({CX} {CY})">{''.join(debris)}{''.join(bullets)}</g>
-  </svg>
+  <div class="intro-bg"></div>
+  <div class="intro-lockup">
+    {{{{WORDMARK}}}}
+    <svg class="intro-svg" viewBox="{vb}" focusable="false">
+      <g class="beat">{''.join(shakes_open)}<g class="sh-in">{sh_inner}</g>{''.join(shakes_close)}</g>
+      <g class="ib-frag" transform="translate({CX} {CY})"><g class="beat-r">{''.join(bursts)}</g></g>
+      <g class="ib-bul" transform="translate({CX} {CY})">{''.join(debris)}{''.join(bullets)}</g>
+    </svg>
+  </div>
   <span class="intro-skip">Tocá o presioná una tecla para saltar</span>
 </div>'''
 
@@ -192,16 +201,35 @@ static_css = f'''/* ---------- intro: el escudo bajo fuego mientras carga ------
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--hero);
   color: var(--mist);
   cursor: pointer;
   animation: ovOut .7s ease 8s forwards;    /* red de seguridad si el JS no corre */
 }}
+/* mientras dura la intro la página no scrollea: el visitante arranca siempre arriba.
+   "intro-lock" la pone y la saca main.js: si el JS no corre, no hay bloqueo */
+html.intro-lock {{ overflow: hidden; }}
+/* el fondo es una capa aparte: en la transición se desvanece mientras el logo viaja al header */
+.intro-bg {{ position: absolute; inset: 0; background: var(--hero); }}
 .intro .intro-ov.out {{ animation: ovOut .7s ease forwards; }}
 @keyframes ovOut {{ to {{ opacity: 0; visibility: hidden; }} }}
 
-/* centro óptico: el conjunto queda apenas por encima del centro geométrico */
-.intro-svg {{ width: min(82vmin, 560px); height: auto; margin-top: -8vh; overflow: visible; }}
+/* SEKURECO al lado del escudo, con la misma proporción que en el header (palabra = ½ escudo),
+   así la transición escala las dos piezas igual. Centro óptico: un poco arriba del centro. */
+.intro-lockup {{
+  --is: min(150px, calc((100vw - 48px) / 6.6));
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--is) * .3);
+  margin-top: -8vh;
+}}
+.intro-svg {{ height: var(--is); width: auto; overflow: visible; transform-origin: 0 0; }}
+.intro-wm-svg {{ height: calc(var(--is) / 2); width: auto; overflow: visible; transform-origin: 0 0; }}
+/* durante la intro el logo del header no se ve: lo reemplaza el que viaja desde el centro */
+.intro .top .logo-wm, .intro .top .logo-shield {{ visibility: hidden; }}
+/* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
+.leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip {{ opacity: 0; transition: opacity .25s ease; }}
+.leaving .beat, .leaving .beat g, .leaving .beat-r {{ animation: none !important; }}
 .intro-skip {{
   position: absolute;
   left: 0; right: 0; bottom: var(--sp4);

@@ -518,16 +518,35 @@ a { color: inherit; }
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--hero);
   color: var(--mist);
   cursor: pointer;
   animation: ovOut .7s ease 8s forwards;    /* red de seguridad si el JS no corre */
 }
+/* mientras dura la intro la página no scrollea: el visitante arranca siempre arriba.
+   "intro-lock" la pone y la saca main.js: si el JS no corre, no hay bloqueo */
+html.intro-lock { overflow: hidden; }
+/* el fondo es una capa aparte: en la transición se desvanece mientras el logo viaja al header */
+.intro-bg { position: absolute; inset: 0; background: var(--hero); }
 .intro .intro-ov.out { animation: ovOut .7s ease forwards; }
 @keyframes ovOut { to { opacity: 0; visibility: hidden; } }
 
-/* centro óptico: el conjunto queda apenas por encima del centro geométrico */
-.intro-svg { width: min(82vmin, 560px); height: auto; margin-top: -8vh; overflow: visible; }
+/* SEKURECO al lado del escudo, con la misma proporción que en el header (palabra = ½ escudo),
+   así la transición escala las dos piezas igual. Centro óptico: un poco arriba del centro. */
+.intro-lockup {
+  --is: min(150px, calc((100vw - 48px) / 6.6));
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--is) * .3);
+  margin-top: -8vh;
+}
+.intro-svg { height: var(--is); width: auto; overflow: visible; transform-origin: 0 0; }
+.intro-wm-svg { height: calc(var(--is) / 2); width: auto; overflow: visible; transform-origin: 0 0; }
+/* durante la intro el logo del header no se ve: lo reemplaza el que viaja desde el centro */
+.intro .top .logo-wm, .intro .top .logo-shield { visibility: hidden; }
+/* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
+.leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip { opacity: 0; transition: opacity .25s ease; }
+.leaving .beat, .leaving .beat g, .leaving .beat-r { animation: none !important; }
 .intro-skip {
   position: absolute;
   left: 0; right: 0; bottom: var(--sp4);
@@ -850,4 +869,12 @@ a { color: inherit; }
   .hdr-play .k-join { animation: none; opacity: 0; }
   .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
+}
+
+/* ---------- indicador de carga reutilizable (SK.cargando) ---------- */
+/* El escudo bajo fuego en chico. El tamaño lo define el contenedor con --sk-size. */
+.sk-loader { display: inline-grid; place-items: center; width: var(--sk-size, 64px); height: var(--sk-size, 64px); color: inherit; }
+.sk-loader-svg { height: 62%; width: auto; overflow: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .sk-loader-svg * { animation: none !important; }
 }
