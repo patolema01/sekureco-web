@@ -13,7 +13,8 @@ en el borde izquierdo del ">" final (S, E y el palo del K salen por ahí) y el d
 que avanza de derecha a izquierda tapando U, R, E, C, O y frena antes que el bloque. El "<" viaja
 con el bloque y rueda 180° (antihorario) en el último 60 % del viaje hasta ser ">". En la web la
 primera E lleva sus barras en teal: al cerrar, se funden en un "_" que viaja por detrás del ">"
-hasta ser el cursor, y el cursor arma el "≡" titilando: 1 barra, apagado, 2 barras, apagado, 3 fijas.
+hasta ser el cursor; el cursor parpadea a 92 bpm y en el tercer encendido queda fijo, y el "≡" se
+completa a 216 bpm (las barras del medio y de arriba aparecen fundiéndose).
 (Los archivos de marca, assets/brand, los hace brand.py y no cambian.)
 """
 import math, sys
@@ -48,10 +49,12 @@ for i, ch in enumerate("SEKURECO"):
         # palo blanco y tres barras teal que arrancan donde termina el palo. Juntas cubren lo mismo
         # que la letra original. La de abajo es la que se convierte en el cursor.
         h = STK / 2
+        ov = 12   # las barras arrancan 12 u por debajo del palo (que va encima): así no queda una costura
+                  # oscura de antialiasing entre el blanco y el teal
         e_palo = (x + 192 - h, -1536 - h, 192 + 2 * h, 1536 + 2 * h)              # x, y, ancho, alto
-        e_barras = [(x + 384 + h, -160 - h, 1728 - 384, 160 + 2 * h),               # abajo
-                    (x + 384 + h, -864 - h, 1645 - 384, 864 - 704 + 2 * h),          # medio
-                    (x + 384 + h, -1536 - h, 1700 - 384, 1536 - 1376 + 2 * h)]       # arriba
+        e_barras = [(x + 384 + h - ov, -160 - h, 1728 - 384 + ov, 160 + 2 * h),               # abajo
+                    (x + 384 + h - ov, -864 - h, 1645 - 384 + ov, 864 - 704 + 2 * h),          # medio
+                    (x + 384 + h - ov, -1536 - h, 1700 - 384 + ov, 1536 - 1376 + 2 * h)]       # arriba
     else:
         letters.append(d)
     x += w + TRACK
@@ -147,9 +150,19 @@ assert abs((ey + eh) - (BARRAS[0] + BARRA_H)) < .01, "el _ y el cursor tienen qu
 
 # parpadeo de terminal (530 / 530 ms, corte seco) desde el asiento del ">":
 # 1 barra · apagado · 2 barras · apagado · 3 barras fijas
-PARPADEO = 0.53
-FIJAS = ASIENTA + 4 * PARPADEO
+# el cursor que llegó parpadea a 92 bpm (un parpadeo por negra, corte seco): encendido · apagado ·
+# encendido · apagado · tercer encendido, y desde ahí no se apaga más
+PARPADEO = 60 / 92 / 2          # 326 ms encendido / 326 apagado
+TERCERO = ASIENTA + 4 * PARPADEO
+# en el tercer encendido el "≡" se completa a 216 bpm, de abajo hacia arriba, fundiéndose (nunca se apagan)
+T216 = 60 / 216                 # 277,8 ms
+SUBE = 1.6 * T216               # cada barra tarda 1,6 T en llegar a su opacidad
+EASE_SUBE = ".25, .1, .25, 1"
+MEDIO_DESDE, ARRIBA_DESDE = TERCERO + T216, TERCERO + 2 * T216
+FIJAS = ARRIBA_DESDE + SUBE
 FIN = FIJAS + 0.05             # main.js pasa a hdr-done con las tres barras ya fijas (no cambia nada)
+CORTA = 1 / ((1 + 5 ** .5) / 2) ** .5   # la barra del medio mide 1/√φ (78,6 %) del ancho, centrada
+BARRA_MEDIO_W = BARRA_W * CORTA
 
 # ---------- tamaño: el alto del ">" sigue la escala tipográfica del sitio (pasos de √φ) ----------
 GT_CEL = 17.0                                  # ≤ 600 px: 17 px, el texto base (en 320 entra SEKURECO)
@@ -195,12 +208,15 @@ reglas = [
     f"@keyframes htelon {{ from {{ width: {W0:.1f}px; }} to {{ width: {W1:.1f}px; }} }}",
     f"@keyframes hrueda {{ from {{ transform: translateX(0) rotate(0deg); }} to {{ transform: translateX({-2 * ROT_DX}px) rotate(-180deg); }} }}",
     "@keyframes hfunde { to { opacity: 0; } }",
-    f'/* "≡" con el parpadeo del cursor: {ms(ASIENTA)} 1 barra · {ms(ASIENTA + PARPADEO)} nada · '
-    f'{ms(ASIENTA + 2 * PARPADEO)} 2 barras · {ms(ASIENTA + 3 * PARPADEO)} nada · {ms(FIJAS)} 3 barras, fijas */',
-] + [f".hdr-play .top .bar{i} {{ animation: hbar{i} {ms(4 * PARPADEO)} steps(1) {ms(ASIENTA)} forwards; }}" for i in (1, 2, 3)] + [
+    f'/* el cursor que llegó parpadea a 92 bpm: {ms(ASIENTA)} encendido · {ms(ASIENTA + PARPADEO)} apagado · '
+    f'{ms(ASIENTA + 2 * PARPADEO)} encendido · {ms(ASIENTA + 3 * PARPADEO)} apagado · {ms(TERCERO)} encendido para siempre;',
+    f'   el "≡" se completa a 216 bpm: medio desde {ms(MEDIO_DESDE)}, arriba desde {ms(ARRIBA_DESDE)}, {ms(SUBE)} cada una */',
+    f".hdr-play .top .bar1 {{ animation: hbar1 {ms(4 * PARPADEO)} steps(1) {ms(ASIENTA)} forwards; }}",
+    f".hdr-play .top .bar2 {{ animation: hbar2 {ms(SUBE)} cubic-bezier({EASE_SUBE}) {ms(MEDIO_DESDE)} both; }}",
+    f".hdr-play .top .bar3 {{ animation: hbar3 {ms(SUBE)} cubic-bezier({EASE_SUBE}) {ms(ARRIBA_DESDE)} both; }}",
     f"@keyframes hbar1 {{ {k1([(0, 1), (25, 0), (50, 1), (75, 0), (100, 1)])} }}",
-    f"@keyframes hbar2 {{ {k1([(0, 0), (50, OPAC[1]), (75, 0), (100, OPAC[1])])} }}",
-    f"@keyframes hbar3 {{ {k1([(0, 0), (100, OPAC[2])])} }}",
+    f"@keyframes hbar2 {{ from {{ opacity: 0; }} to {{ opacity: {OPAC[1]}; }} }}",
+    f"@keyframes hbar3 {{ from {{ opacity: 0; }} to {{ opacity: {OPAC[2]}; }} }}",
     "",
     '/* estado final (y el de cualquier otra página vista en la sesión): ">≡" fijo, con su degradé */',
     f".hdr-done .top .wm-move {{ transform: translateX({T:.0f}px); }}",
@@ -216,7 +232,8 @@ reglas = [
     '/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan y se',
     '   funden en la de abajo, que queda como un "_" titilando (530 / 530 ms) */',
     f"{abierto} .k-arms {{ transform: translate({-ROT_DX}px, {-ROT_DX}px) rotate(-90deg); }}",
-    f"{abierto} .bar2 {{ transform: translateY({BARRAS[0] - BARRAS[1]:.1f}px); opacity: 0; }}",
+    ".top .bar2 { transform-box: fill-box; transform-origin: center; }",
+    f"{abierto} .bar2 {{ transform: translateY({BARRAS[0] - BARRAS[1]:.1f}px) scaleX({1 / CORTA:.5f}); opacity: 0; }}",
     f"{abierto} .bar3 {{ transform: translateY({BARRAS[0] - BARRAS[2]:.1f}px); opacity: 0; }}",
     f"{abierto} .bar1 {{ opacity: 1; animation: hblink {ms(2 * PARPADEO)} steps(1) infinite; }}",
     "",
@@ -249,17 +266,26 @@ k_svg = (f'<path class="k-stem" fill="currentColor" stroke="currentColor" stroke
 letras_svg = f'<g class="wm-letters" fill="currentColor" stroke="currentColor" stroke-width="{STK}">{paths}</g>'
 # para la intro: solo SEKURECO con sus acentos teal (E y K), sin ventana, sin "≡" y sin cursor
 intro_svg = (f'<svg class="intro-wm-svg" viewBox="{vb_x} {vb_y} {vb_w:.0f} {vb_h}" aria-hidden="true" focusable="false">'
-             f'{letras_svg}{e_palo_svg}' + ''.join(r("la", v) for v in e_barras) + f'{k_svg}</svg>')
-barras = ''.join(f'<rect class="bar bar{i + 1} la" x="{BX:.1f}" y="{y:.1f}" width="{BARRA_W:.1f}" height="{BARRA_H:.1f}"/>'
-                 for i, y in enumerate(BARRAS))
+             f'{letras_svg}' + ''.join(r("la", v) for v in e_barras) + f'{e_palo_svg}{k_svg}</svg>')
+barras = ''.join(f'<rect class="bar bar{i + 1} la" x="{BX + (BARRA_W - w) / 2:.1f}" y="{y:.1f}" width="{w:.1f}" height="{BARRA_H:.1f}"/>'
+                 for i, (y, w) in enumerate(zip(BARRAS, [BARRA_W, BARRA_MEDIO_W, BARRA_W])))
+k_arms_svg = f'<path class="k-arms la la-s" stroke-width="{STK}" stroke-linejoin="miter" d="{arms_d}"/>'
+k_resto_svg = k_svg.replace(k_arms_svg, "")
 wm_svg = (f'<svg class="logo-wm" viewBox="{vb_x} {vb_y} {vb_w:.0f} {vb_h}" aria-hidden="true" focusable="false">'
           f'<defs><clipPath id="wmwin" clipPathUnits="userSpaceOnUse">'
-          f'<rect class="win" x="{WIN_L:.1f}" y="{vb_y - 2000}" width="{W0:.1f}" height="{vb_h + 4000}"/></clipPath></defs>'
-          # el "_" (barra de abajo de la E) va primero: así queda por detrás del ">"; y fuera de la
-          # ventana, porque termina donde va el cursor, más allá del telón
-          f'<g class="cur-move">{r("e-cur la", e_barras[0])}</g>'
-          f'<g clip-path="url(#wmwin)"><g class="wm-move">{letras_svg}{e_palo_svg}'
-          f'{r("e-bar e-bar2 la", e_barras[1])}{r("e-bar e-bar3 la", e_barras[2])}{k_svg}</g></g>'
+          f'<rect class="win" x="{WIN_L:.1f}" y="{vb_y - 2000}" width="{W0:.1f}" height="{vb_h + 4000}"/></clipPath>'
+          f'<clipPath id="wmizq" clipPathUnits="userSpaceOnUse">'
+          f'<rect x="{WIN_L:.1f}" y="{vb_y - 2000}" width="{vb_w * 2:.0f}" height="{vb_h + 4000}"/></clipPath></defs>'
+          # tres capas que se mueven juntas (misma animación de bloque):
+          # 1) letras blancas (y las barras de la E que se funden), recortadas por la ventana
+          f'<g clip-path="url(#wmwin)"><g class="wm-move">{letras_svg}'
+          f'{r("e-bar e-bar2 la", e_barras[1])}{r("e-bar e-bar3 la", e_barras[2])}{k_resto_svg}</g></g>'
+          # 2) el "_" que viaja: por delante de las letras (nunca queda tapado) y recortado solo por
+          #    el borde izquierdo, porque termina donde va el cursor, más allá del telón. El palo de la
+          #    E va acá, encima del "_" (tapa el empalme), y se desvanece antes de que el "_" se mueva
+          f'<g clip-path="url(#wmizq)"><g class="cur-move">{r("e-cur la", e_barras[0])}{e_palo_svg}</g></g>'
+          # 3) el ">", por delante del "_", recortado por la ventana
+          f'<g clip-path="url(#wmwin)"><g class="wm-move">{k_arms_svg}</g></g>'
           f'<g class="bars">{barras}</g></svg>')
 
 open(BUILD / 'header-shield.svg', 'w').write(shield_svg)
@@ -269,7 +295,7 @@ open(BUILD / 'header.css', 'w').write(css)
 
 print(f'header ok · ">" final: borde izq {WIN_L:.1f} u, punta {TIP:.1f} u · bloque {T:.0f} u · telón {W0:.0f} → {W1:.0f} u')
 print(f'   alto del ">": {GT_ESC:.2f} px escritorio / {GT_CEL:.0f} px celular (logo {WM_ESC:.3f} / {WM_CEL:.3f} px)')
-print(f'   "≡": barras de {BARRA_W:.0f} × {BARRA_H:.1f} u a {ESPACIO_U:.0f} u del ">" · opacidades {OPAC}')
+print(f'   "≡": barras de {BARRA_W:.0f} × {BARRA_H:.1f} u (la del medio {BARRA_MEDIO_W:.0f} u, centrada) a {ESPACIO_U:.0f} u del ">" · opacidades {OPAC}')
 print('   línea de tiempo (ms desde hdr-play):')
 for t, ev in sorted((t, ev) for ev, t in [("arranca el bloque, el telón y el fundido de unión y palo", S0),
               ("unión y palo del K ya no se ven", S0 + FUNDIDO),
@@ -278,6 +304,8 @@ for t, ev in sorted((t, ev) for ev, t in [("arranca el bloque, el telón y el fu
               ("las barras de la E ya se fundieron en un _", S0 + E_FUNDE),
               ('el "_" empieza a viajar', S0 + DUR * VIAJA_DESDE),
               ('se asienta el ">" y llega el "_": es el cursor (encendido: 1 barra)', ASIENTA),
-              ("apagado", ASIENTA + PARPADEO), ("encendido: 2 barras", ASIENTA + 2 * PARPADEO),
-              ("apagado", ASIENTA + 3 * PARPADEO), ("encendido: 3 barras, fijas", FIJAS), ("hdr-done", FIN)]):
+              ("apagado", ASIENTA + PARPADEO), ("encendido", ASIENTA + 2 * PARPADEO),
+              ("apagado", ASIENTA + 3 * PARPADEO), ("tercer encendido: el cursor queda fijo", TERCERO),
+              ("la barra del medio empieza a aparecer (→ 60 %)", MEDIO_DESDE), ("la de arriba empieza a aparecer (→ 20 %)", ARRIBA_DESDE),
+              ("la del medio llega al 60 %", MEDIO_DESDE + SUBE), ("la de arriba llega al 20 %: ≡ fijo", FIJAS), ("hdr-done", FIN)]):
     print(f'     {round(t * 1000):5d}  {ev}')
