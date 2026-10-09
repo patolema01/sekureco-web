@@ -72,7 +72,7 @@
       setTimeout(function () {
         root.classList.remove("hdr-play");
         root.classList.add("hdr-done");
-      }, 2200);
+      }, 2800);
     }, 700);
     document.removeEventListener("keydown", end);
   }

@@ -87,7 +87,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 - Dura como mínimo un loop y sigue mientras la página no terminó de cargar. Una vez por sesión, se salta con un toque o una tecla, no aparece con "reducir movimiento" ni sin JS.
 
 **Header:**
-- Escudo (link al inicio) + SEKURECO. Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; el "<" se da vuelta y queda ">_" con el cursor titilando, en la posición del K.
+- A la izquierda SEKURECO; a la derecha el botón de tema y el escudo (link al inicio). Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; la unión horizontal del K se desvanece, el "<" se da vuelta en un ">" limpio (sin "-" en la punta), se desliza hasta el borde izquierdo y queda ">_" con el cursor titilando.
 - ">_" es el botón del menú desplegable (Servicios, Cómo trabajamos, Cómo elegimos, Contacto). Al abrir, el ">" gira y apunta hacia abajo. Se cierra con Esc, tocando afuera o eligiendo una sección.
 - El cierre se ve una vez por sesión; después el header arranca ya en ">_". Sin JS se ve SEKURECO completo.
 

@@ -445,6 +445,7 @@ a { color: inherit; }
 /* ---------- selector de tema ---------- */
 
 .top-nav { display: flex; align-items: center; gap: 20px; }
+.top-nav .brand { margin-left: 4px; }
 .theme-btn {
   display: inline-grid;
   place-items: center;
@@ -759,7 +760,8 @@ a { color: inherit; }
   .steps { grid-template-columns: 1fr; gap: var(--sp4); }
 }
 
-/* ---------- header: escudo + SEKURECO que se cierra en ">_" (botón del menú) ---------- */
+/* ---------- header: SEKURECO que se cierra en ">_" (botón del menú) a la izquierda,
+   escudo (link al inicio) a la derecha ---------- */
 
 .top { --hs: 34px; position: relative; z-index: 20; }
 .brand-row { position: relative; display: flex; align-items: center; gap: 14px; }
@@ -785,7 +787,14 @@ a { color: inherit; }
 /* se cierra una vez por sesión, después de la intro */
 .hdr-play .door { animation: hdoor 1.02s cubic-bezier(.7, 0, .25, 1) .5s both; }
 .hdr-play .logo-wm .k-arms { animation: hflip .5s cubic-bezier(.6, 0, .2, 1) 1.62s both; }
-.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.17s infinite; }
+/* la unión horizontal del K se va con las puertas: el ">" queda limpio, sin "-" en la punta */
+.hdr-play .k-join { animation: hjoin .6s ease .9s both; }
+@keyframes hjoin { to { opacity: 0; } }
+.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.7s infinite; }
+/* con el escudo a la derecha, el ">_" se desliza hasta el borde izquierdo
+   (1,441 × --hs es la distancia del ">" al inicio del logo) */
+.hdr-play .logo-wm { animation: hslide .5s cubic-bezier(.65, 0, .35, 1) 2.15s both; }
+@keyframes hslide { to { transform: translateX(calc(var(--hs) * -1.441)); } }
 @keyframes hdoor { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes hflip { from { transform: scaleX(1); } to { transform: scaleX(-1); } }
 @keyframes hblink { 0% { opacity: 1; } 50% { opacity: 0; } }
@@ -793,6 +802,8 @@ a { color: inherit; }
 /* estado final (y el de cualquier otra página vista en la sesión) */
 .hdr-done .door { transform: scaleX(1); }
 .hdr-done .logo-wm .k-arms { transform: scaleX(-1); }
+.hdr-done .k-join { opacity: 0; }
+.hdr-done .logo-wm { transform: translateX(calc(var(--hs) * -1.441)); }
 .hdr-done .hcur { animation: hblink 1.06s steps(1) infinite; }
 
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
@@ -802,7 +813,7 @@ a { color: inherit; }
 .menu {
   position: absolute;
   top: calc(100% + 14px);
-  left: calc(var(--hs) * 2.277 - 2px);   /* alineado bajo el ">_" */
+  left: -16px;   /* el ">" de las opciones queda bajo el ">_" */
   min-width: 230px;
   padding: 8px;
   background: #13263C;
@@ -836,5 +847,7 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .hdr-play .door { animation: none; transform: scaleX(1); }
   .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
+  .hdr-play .k-join { animation: none; opacity: 0; }
+  .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
 }
