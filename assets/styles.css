@@ -825,6 +825,28 @@ html.intro-lock { overflow: hidden; }
 .hdr-done .logo-wm { transform: translateX(calc(var(--hs) * -1.441)); }
 .hdr-done .hcur { animation: hblink 1.06s steps(1) infinite; }
 
+/* etiqueta "menú" al lado del ">_": el público no técnico no reconoce el prompt como menú.
+   Aparece cuando el ">_" ya se deslizó; sin JS no se ve (queda SEKURECO completo) */
+.menu-btn { position: relative; }
+.menu-label {
+  position: absolute;
+  top: 50%;
+  left: calc(4px + var(--hs) * .778 + 8px);   /* justo después del "_" ya desplazado */
+  transform: translateY(-50%);
+  font-size: .8125rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: #8FA2B0;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+.hdr-play .menu-label { animation: hlabel .4s ease 2.7s both; }
+@keyframes hlabel { to { opacity: 1; } }
+.hdr-done .menu-label { opacity: 1; }
+.menu-btn:hover .menu-label, .menu-btn[aria-expanded="true"] .menu-label { color: var(--mist); }
+@media (prefers-reduced-motion: reduce) { .hdr-play .menu-label { animation: none; opacity: 1; } }
+
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
 .hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
 .menu-btn[aria-expanded="true"] .hcur { animation: none; opacity: 1; }

@@ -89,7 +89,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Header:**
 - A la izquierda SEKURECO; a la derecha el botón de tema y el escudo (link al inicio). Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; la unión horizontal del K se desvanece, el "<" se da vuelta en un ">" limpio (sin "-" en la punta), se desliza hasta el borde izquierdo y queda ">_" con el cursor titilando.
-- ">_" es el botón del menú desplegable (Servicios, Cómo trabajamos, Cómo elegimos, Contacto). Al abrir, el ">" gira y apunta hacia abajo. Se cierra con Esc, tocando afuera o eligiendo una sección.
+- ">_" es el botón del menú desplegable (Servicios, Cómo trabajamos, Cómo elegimos, Contacto). Al lado lleva la etiqueta "menú" en gris (se aclara al pasar o con el menú abierto), porque el público no técnico no reconoce el prompt como menú; aparece cuando el ">_" terminó de deslizarse. Al abrir, el ">" gira y apunta hacia abajo. Se cierra con Esc, tocando afuera o eligiendo una sección.
 - El cierre se ve una vez por sesión; después el header arranca ya en ">_". Sin JS se ve SEKURECO completo.
 
 **Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
