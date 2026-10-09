@@ -31,7 +31,7 @@ respaldos, capacitación).
 | Pieza | Dónde |
 |---|---|
 | Hosting | Cloudflare Pages conectado al repo `patolema01/sekureco-web`; push a `main` publica, cada rama genera un preview |
-| DNS y correo | Cloudflare (zona sekureco.ar). Email Routing: pato@, leandro@ y una para Gonzalo; catch-all en Drop. El sitio usa contacto@ y seguridad@ |
+| DNS y correo | Cloudflare (zona sekureco.ar). Email Routing: pato@, leandro@, gjlema@ (Gonzalo) y administracion@ (también a Gonzalo); catch-all en Drop. El sitio usa contacto@ y seguridad@ |
 | Dominio | sekureco.ar, a nombre de Gonzalo en NIC Argentina, delegado a Cloudflare |
 | Repo | `patolema01/sekureco-web` en la cuenta personal de Pato, repo público; Leandro y Gonzalo editan como colaboradores del repo (permiso de escritura, no hay organización). CODEOWNERS `* @patolema01`, ruleset sobre `main`. Más adelante se puede transferir a una organización `sekureco` |
 | Desarrollo | Claude Code en la VM `agentes` del homelab de Pato, en `~/proyectos/sekureco-web` |
