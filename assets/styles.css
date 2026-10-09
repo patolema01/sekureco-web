@@ -719,7 +719,19 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .hdr-play .top .wm-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
 .hdr-play .top .win { animation: htelon 0.85s cubic-bezier(.5, 0, .75, .9) 0.3s both; }
 .hdr-play .top .k-arms { animation: hrueda 0.6s cubic-bezier(.2, .4, .2, 1) 0.7s both; }
-.hdr-play .top .k-join, .hdr-play .top .k-stem { animation: hfunde 0.333s linear 0.3s both; }
+.hdr-play .top .k-join, .hdr-play .top .k-stem, .hdr-play .top .e-stem { animation: hfunde 0.333s linear 0.3s both; }
+/* la E: las barras de arriba y del medio bajan y se funden en la de abajo; esa queda como un "_" que
+   va con el bloque el primer 35 % y después viaja (por detrás del ">") hasta ser el cursor */
+.hdr-play .top .e-bar2 { animation: hfundeE2 0.38s cubic-bezier(.4, 0, .2, 1) 0.3s both; }
+.hdr-play .top .e-bar3 { animation: hfundeE3 0.38s cubic-bezier(.4, 0, .2, 1) 0.3s both; }
+@keyframes hfundeE2 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(704.0px); } }
+@keyframes hfundeE3 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(1376.0px); } }
+.hdr-play .top .cur-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
+.top .e-cur { transform-box: fill-box; transform-origin: 0 100%; }
+.hdr-play .top .e-cur { animation: hviaja 0.65s cubic-bezier(.15, .3, .25, 1) 0.65s both, hentrega .01s steps(1, jump-start) 1.3s forwards; }
+@keyframes hviaja { to { transform: translateX(4215.1px) scale(1.39155, 1.03891); } }
+/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (misma posición y tamaño): es el cursor */
+@keyframes hentrega { to { opacity: 0; } }
 @keyframes hbloque { to { transform: translateX(-4946px); } }
 @keyframes htelon { from { width: 18027.3px; } to { width: 1609.0px; } }
 @keyframes hrueda { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(-120px) rotate(-180deg); } }
@@ -736,7 +748,7 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .hdr-done .top .wm-move { transform: translateX(-4946px); }
 .hdr-done .top .win { width: 1609.0px; }
 .hdr-done .top .k-arms { transform: translateX(-120px) rotate(-180deg); }
-.hdr-done .top .k-join, .hdr-done .top .k-stem { opacity: 0; }
+.hdr-done .top .k-join, .hdr-done .top .k-stem, .hdr-done .top .e-stem, .hdr-done .top .e-bar, .hdr-done .top .e-cur { opacity: 0; }
 .hdr-done .top .bar { transition: opacity .15s ease-out, transform .15s ease-out; }
 .hdr-done .top .bar1 { opacity: 1; }
 .hdr-done .top .bar2 { opacity: 0.6; }
@@ -756,7 +768,8 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
   .hdr-play .top .wm-move { animation: none; transform: translateX(-4946px); }
   .hdr-play .top .win { animation: none; width: 1609.0px; }
   .hdr-play .top .k-arms { animation: none; transform: translateX(-120px) rotate(-180deg); }
-  .hdr-play .top .k-join, .hdr-play .top .k-stem { animation: none; opacity: 0; }
+  .hdr-play .top .k-join, .hdr-play .top .k-stem, .hdr-play .top .e-stem, .hdr-play .top .e-bar, .hdr-play .top .e-cur { animation: none; opacity: 0; }
+  .hdr-play .top .cur-move { animation: none; }
   .hdr-play .top .bar { animation: none; }
   .hdr-play .top .bar1 { opacity: 1; }
   .hdr-play .top .bar2 { opacity: 0.6; }

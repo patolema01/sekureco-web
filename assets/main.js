@@ -40,7 +40,14 @@
   "use strict";
   var ov = document.getElementById("intro");
   var root = document.documentElement;
-  if (!ov || !root.classList.contains("intro")) return;
+  if (!root.classList.contains("intro")) return;
+  // páginas sin intro (404): theme.js no lo sabe y marca "intro" en la primera visita; sin esto el
+  // logo del header quedaba oculto. Va directo al estado final.
+  if (!ov) {
+    root.classList.remove("intro");
+    root.classList.add("hdr-done");
+    return;
+  }
   var MIN = 3000, CEASE = 2200, FLY = 950, done = false, loaded = document.readyState === "complete";
   var EASE = "cubic-bezier(.65, 0, .25, 1)";
   // bloquea el scroll mientras dura la intro; lo pone este script, así sin JS no hay bloqueo

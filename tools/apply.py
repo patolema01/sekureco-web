@@ -5,11 +5,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "tools" / "build"
 intro_html = (B / "intro.html").read_text()
-_wm = (B / "header-wordmark.svg").read_text()
-# la copia de SEKURECO que usa la intro lleva otro id de ventana: el del header no se puede repetir
-_wm_intro = (_wm.replace('class="logo-wm"', 'class="intro-wm-svg"', 1)
-             .replace('id="wmwin"', 'id="wmwin-i"').replace('url(#wmwin)', 'url(#wmwin-i)'))
-intro_html = intro_html.replace("{{WORDMARK}}", _wm_intro)
+# la intro lleva su propio SEKURECO (header.py): solo las letras con sus acentos teal, sin la
+# ventana, el "≡" ni el cursor del header
+intro_html = intro_html.replace("{{WORDMARK}}", (B / "intro-wordmark.svg").read_text())
 intro_css = (B / "intro.css").read_text()
 shield = (B / "header-shield.svg").read_text()
 wm = (B / "header-wordmark.svg").read_text()
