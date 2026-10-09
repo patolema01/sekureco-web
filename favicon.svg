@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-130 -90 992 1000"><rect x="-130" y="-90" width="992" height="1000" rx="200" fill="#0F2032"/><g transform="translate(0 0) scale(1.0)">
+<defs><mask id="mf" maskUnits="userSpaceOnUse" x="-20" y="-20" width="780" height="880">
+<rect x="-20" y="-20" width="780" height="880" fill="#fff"/>
+<path d="M342.0 -10.0L390.0 -10.0L390.0 140.0L342.0 140.0ZM560.0 259.8L760.0 336.0L760.0 428.0L560.0 333.4ZM-10.0 350.4L140.0 427.0L140.0 502.1L-10.0 443.6ZM390.0 -10.0L760.0 -10.0L760.0 336.0L390.0 195.0Z" fill="#000"/></mask>
+<clipPath id="cf"><path d="M390.0 -10.0L760.0 -10.0L760.0 336.0L390.0 195.0Z"/></clipPath></defs>
+<g mask="url(#mf)" fill="#EEF3F3"><path fill-rule="evenodd" d="M27 120L366 15L705 120V420C705 600 560 740 366 815C172 740 27 600 27 420ZM132 195L366 122L600 195V420C600 545 500 650 366 705C232 650 132 545 132 420Z"/><path d="M27 369L356 537L408 537L474 489L132 312L27 312Z"/><path d="M371 244L705 402L705 460L600 470L262 288Z"/></g>
+<path clip-path="url(#cf)" fill="#3FB8B1" fill-rule="evenodd" d="M27 120L366 15L705 120V420C705 600 560 740 366 815C172 740 27 600 27 420ZM132 195L366 122L600 195V420C600 545 500 650 366 705C232 650 132 545 132 420Z"/>
+</g></svg>
