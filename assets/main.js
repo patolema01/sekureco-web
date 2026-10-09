@@ -53,15 +53,17 @@
 })();
 
 // Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar
-// (y como mínimo hasta el 3er balazo, ~2,2 s). Al terminar, SEKURECO y el escudo se achican
-// y viajan cada uno a su lugar en el header (transición FLIP con Web Animations,
-// permitida por la CSP) mientras el fondo se desvanece. Se salta con un toque o una tecla.
+// (y como mínimo 3 balazos y ~1 s del último espiral: sale a los 2,7 s). Si a los 2,3 s
+// ya cargó, se corta el fuego ("cease") para que no salga la 4ª bala. Al terminar,
+// SEKURECO y el escudo se achican y viajan cada uno a su lugar en el header (transición
+// FLIP con Web Animations, permitida por la CSP) mientras el fondo se desvanece.
+// Se salta con un toque o una tecla.
 (function () {
   "use strict";
   var ov = document.getElementById("intro");
   var root = document.documentElement;
   if (!ov || !root.classList.contains("intro")) return;
-  var MIN = 2200, FLY = 950, done = false, loaded = document.readyState === "complete";
+  var MIN = 2700, CEASE = 2300, FLY = 950, done = false, loaded = document.readyState === "complete";
   var EASE = "cubic-bezier(.65, 0, .25, 1)";
   // bloquea el scroll mientras dura la intro; lo pone este script, así sin JS no hay bloqueo
   root.classList.add("intro-lock");
@@ -122,6 +124,11 @@
     var left = MIN - performance.now();
     if (left <= 0) end(); else setTimeout(check, left);
   }
+  // la 4ª bala sale a volar a los ~2,37 s: si ya cargó, se corta el fuego antes;
+  // si no, el fuego sigue hasta que cargue
+  setTimeout(function () {
+    if (loaded && !done) ov.classList.add("cease");
+  }, Math.max(0, CEASE - performance.now()));
   window.addEventListener("load", function () { loaded = true; check(); });
   ov.addEventListener("click", end);
   document.addEventListener("keydown", function onKey(e) {

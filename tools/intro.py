@@ -34,7 +34,7 @@ COMP = (3 * BEAT + PAUSE) - 2 * BEAT       # ...y las puertas terminan de cerrar
 T_FLIP = T_COMP + COMP + .1
 T_SHIFT = T_COMP + COMP
 T_CUR = T_FLIP + .55
-T_MIN = 2.2                                # como mínimo hasta el 3er balazo (T0 + 2·BEAT ≈ 1,67 s) y medio segundo de su impacto; después, hasta que cargue
+T_MIN = 2.7                                # como mínimo 3 balazos y ~1 s del último espiral (3er impacto ≈ 1,67 s); después, hasta que cargue
 
 css, shots = [], []
 for gstart, pat in PATTERNS:
@@ -229,6 +229,8 @@ html.intro-lock {{ overflow: hidden; }}
 .intro .top .logo-wm, .intro .top .logo-shield {{ visibility: hidden; }}
 /* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
 .leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip {{ opacity: 0; transition: opacity .25s ease; }}
+/* a los 2,3 s, si ya cargó, main.js corta el fuego: la 4ª bala (sale a los ~2,37 s) no se ve */
+.cease .ib-bul {{ opacity: 0; transition: opacity .15s ease; }}
 .leaving .beat, .leaving .beat g, .leaving .beat-r {{ animation: none !important; }}
 .intro-skip {{
   position: absolute;
