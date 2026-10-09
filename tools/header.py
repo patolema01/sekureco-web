@@ -162,9 +162,12 @@ css = f'''/* ---------- header (generado por tools/header.py: no editar a mano) 
 ''' + "".join(
     f'.hdr-play .ml{i + 1} {{ animation: mtype .01s steps(1, jump-start) {ms(T_LETRA[i])} both; }}\n' +
     (f'.hdr-play .mc{i + 1} .mcur {{ animation: mon {ms(T_LETRA[i + 1] - T_LETRA[i])} {ms(T_LETRA[i])}; }}\n' if i < 3 else
-     f'.hdr-play .mc4 .mcur {{ animation: mon .01s {ms(T_LETRA[3])} forwards, hblink 1.06s steps(1) {ms(TITILA)} infinite; }}\n')
+     f'.hdr-play .mc4 .mcur {{ animation: mon .01s {ms(T_LETRA[3])} forwards, htitila 1.06s steps(1) {ms(TITILA)} infinite; }}\n')
     for i in range(4)) + f'''@keyframes mtype {{ from {{ max-width: 0; }} to {{ max-width: 2em; }} }}
 @keyframes mon {{ from, to {{ width: var(--cw); }} }}
+/* igual que hblink, con otro nombre: al pasar a hdr-done el titileo arranca de nuevo (encendido);
+   con el mismo nombre el navegador lo continuaría con el delay nuevo y la fase saltaría */
+@keyframes htitila {{ 0% {{ opacity: 1; }} 50% {{ opacity: 0; }} }}
 
 /* estado final (y el de cualquier otra página vista en la sesión) */
 .hdr-done .top .wm-move {{ transform: translateX({T:.0f}px); }}

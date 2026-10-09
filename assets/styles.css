@@ -761,9 +761,12 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .hdr-play .ml3 { animation: mtype .01s steps(1, jump-start) 1.725s both; }
 .hdr-play .mc3 .mcur { animation: mon 0.18s 1.725s; }
 .hdr-play .ml4 { animation: mtype .01s steps(1, jump-start) 1.905s both; }
-.hdr-play .mc4 .mcur { animation: mon .01s 1.905s forwards, hblink 1.06s steps(1) 2.435s infinite; }
+.hdr-play .mc4 .mcur { animation: mon .01s 1.905s forwards, htitila 1.06s steps(1) 2.435s infinite; }
 @keyframes mtype { from { max-width: 0; } to { max-width: 2em; } }
 @keyframes mon { from, to { width: var(--cw); } }
+/* igual que hblink, con otro nombre: al pasar a hdr-done el titileo arranca de nuevo (encendido);
+   con el mismo nombre el navegador lo continuaría con el delay nuevo y la fase saltaría */
+@keyframes htitila { 0% { opacity: 1; } 50% { opacity: 0; } }
 
 /* estado final (y el de cualquier otra página vista en la sesión) */
 .hdr-done .top .wm-move { transform: translateX(-4946px); }
