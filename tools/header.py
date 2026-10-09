@@ -49,12 +49,13 @@ for i, ch in enumerate("SEKURECO"):
         # palo blanco y tres barras teal que arrancan donde termina el palo. Juntas cubren lo mismo
         # que la letra original. La de abajo es la que se convierte en el cursor.
         h = STK / 2
-        ov = 12   # las barras arrancan 12 u por debajo del palo (que va encima): así no queda una costura
-                  # oscura de antialiasing entre el blanco y el teal
+        # cada barra es su segmento de la letra con el mismo trazo (19 u de cada lado): abajo 384→1728,
+        # medio 384→1645, arriba 384→1700. El palo va encima y tapa el arranque (sin costura de
+        # antialiasing entre el blanco y el teal); sueltas, en el "≡", se ven enteras.
         e_palo = (x + 192 - h, -1536 - h, 192 + 2 * h, 1536 + 2 * h)              # x, y, ancho, alto
-        e_barras = [(x + 384 + h - ov, -160 - h, 1728 - 384 + ov, 160 + 2 * h),               # abajo
-                    (x + 384 + h - ov, -864 - h, 1645 - 384 + ov, 864 - 704 + 2 * h),          # medio
-                    (x + 384 + h - ov, -1536 - h, 1700 - 384 + ov, 1536 - 1376 + 2 * h)]       # arriba
+        e_barras = [(x + 384 - h, -160 - h, 1728 - 384 + 2 * h, 160 + 2 * h),               # abajo
+                    (x + 384 - h, -864 - h, 1645 - 384 + 2 * h, 864 - 704 + 2 * h),          # medio
+                    (x + 384 - h, -1536 - h, 1700 - 384 + 2 * h, 1536 - 1376 + 2 * h)]       # arriba
     else:
         letters.append(d)
     x += w + TRACK
@@ -130,12 +131,11 @@ XH = fuente["OS/2"].sxHeight / upm
 cmap, hmtx = fuente.getBestCmap(), fuente["hmtx"]
 F_U = (capH + STK) / XH                                       # "tamaño de letra" en u del viewBox
 ESPACIO_U = hmtx[cmap[ord(" ")]][0] / upm * F_U
-BARRA_W = sum(hmtx[cmap[ord(c)]][0] for c in "menú") / 4 / upm * F_U
-nx, ny = -752 / math.hypot(1110, 752), 1110 / math.hypot(1110, 752)
-BARRA_H = (abs((832 - 522) * nx) + abs((1920 - 522) * nx + (1536 - 784) * ny)) / 2 + STK   # trazo del ">"
 GT_ARRIBA, GT_ABAJO = -capH - STK / 2, STK / 2                 # tope y base del ">" en pantalla
-BX = TIP + ESPACIO_U
-BARRAS = [GT_ABAJO - BARRA_H, (GT_ARRIBA + GT_ABAJO) / 2 - BARRA_H / 2, GT_ARRIBA]   # y de abajo, medio, arriba
+BX = TIP + ESPACIO_U                                          # borde izquierdo del "≡"
+EQ_DX = BX - e_barras[0][0]                                   # traslado de las barras de la E al "≡"
+EQ = [(bx + EQ_DX, by, bw, bh) for bx, by, bw, bh in e_barras]   # abajo, medio, arriba
+assert abs(EQ[2][1] - GT_ARRIBA) < .01 and abs(EQ[0][1] + EQ[0][3] - GT_ABAJO) < .01, "el ≡ tiene el alto del >"
 OPAC = [1, .6, .2]                                             # degradé
 
 # ---------- la E: sus barras se funden en un "_" que viaja hasta ser el cursor ----------
@@ -143,10 +143,8 @@ E_FUNDE = 0.38                  # las barras de arriba y del medio bajan y se fu
 EASE_E = ".4, 0, .2, 1"
 VIAJA_DESDE = 0.35              # el "_" va con el bloque el primer 35 % y después viaja a la derecha
 EASE_VIAJE = ".15, .3, .25, 1"  # arranca ya hacia la derecha: nunca retrocede ni se acerca al borde fijo
-ex, ey, ew, eh = e_barras[0]
-VIAJE_DX = BX - T - ex                          # en el marco del bloque: termina en la x del cursor
-VIAJE_SX, VIAJE_SY = BARRA_W / ew, BARRA_H / eh  # y del tamaño del cursor (apoyado en la misma base)
-assert abs((ey + eh) - (BARRAS[0] + BARRA_H)) < .01, "el _ y el cursor tienen que apoyar en la misma base"
+VIAJE_DX = BX - T - e_barras[0][0]             # en el marco del bloque: termina en la barra de abajo del "≡"
+                                                # (el "_" no cambia de tamaño: llega tal cual y es el cursor)
 
 # parpadeo de terminal (530 / 530 ms, corte seco) desde el asiento del ">":
 # 1 barra · apagado · 2 barras · apagado · 3 barras fijas
@@ -161,8 +159,7 @@ EASE_SUBE = ".25, .1, .25, 1"
 MEDIO_DESDE, ARRIBA_DESDE = TERCERO + T216, TERCERO + 2 * T216
 FIJAS = ARRIBA_DESDE + SUBE
 FIN = FIJAS + 0.05             # main.js pasa a hdr-done con las tres barras ya fijas (no cambia nada)
-CORTA = 1 / ((1 + 5 ** .5) / 2) ** .5   # la barra del medio mide 1/√φ (78,6 %) del ancho, centrada
-BARRA_MEDIO_W = BARRA_W * CORTA
+
 
 # ---------- tamaño: el alto del ">" sigue la escala tipográfica del sitio (pasos de √φ) ----------
 GT_CEL = 17.0                                  # ≤ 600 px: 17 px, el texto base (en 320 entra SEKURECO)
@@ -198,11 +195,10 @@ reglas = [
     f"@keyframes hfundeE2 {{ 90% {{ opacity: 0; }} 100% {{ opacity: 0; transform: translateY({e_barras[0][1] - e_barras[1][1]:.1f}px); }} }}",
     f"@keyframes hfundeE3 {{ 90% {{ opacity: 0; }} 100% {{ opacity: 0; transform: translateY({e_barras[0][1] - e_barras[2][1]:.1f}px); }} }}",
     f".hdr-play .top .cur-move {{ animation: hbloque {ms(DUR)} cubic-bezier({EASE_BLOQUE}) {ms(S0)} both; }}",
-    ".top .e-cur { transform-box: fill-box; transform-origin: 0 100%; }",
     f".hdr-play .top .e-cur {{ animation: hviaja {ms(DUR * (1 - VIAJA_DESDE))} cubic-bezier({EASE_VIAJE}) {ms(S0 + DUR * VIAJA_DESDE)} both, "
     f"hentrega .01s steps(1, jump-start) {ms(ASIENTA)} forwards; }}",
-    f"@keyframes hviaja {{ to {{ transform: translateX({VIAJE_DX:.1f}px) scale({VIAJE_SX:.5f}, {VIAJE_SY:.5f}); }} }}",
-    '/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (misma posición y tamaño): es el cursor */',
+    f"@keyframes hviaja {{ to {{ transform: translateX({VIAJE_DX:.1f}px); }} }}",
+    '/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (la misma barra, en el mismo lugar): es el cursor */',
     "@keyframes hentrega { to { opacity: 0; } }",
     f"@keyframes hbloque {{ to {{ transform: translateX({T:.0f}px); }} }}",
     f"@keyframes htelon {{ from {{ width: {W0:.1f}px; }} to {{ width: {W1:.1f}px; }} }}",
@@ -229,12 +225,11 @@ reglas = [
     "@media (hover: hover) and (pointer: fine) {",
     "  .hdr-done .top .menu-btn:hover .bar { opacity: 1; }",
     "}",
-    '/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan y se',
+    '/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan (sin cambiar de largo) y se',
     '   funden en la de abajo, que queda como un "_" titilando (530 / 530 ms) */',
     f"{abierto} .k-arms {{ transform: translate({-ROT_DX}px, {-ROT_DX}px) rotate(-90deg); }}",
-    ".top .bar2 { transform-box: fill-box; transform-origin: center; }",
-    f"{abierto} .bar2 {{ transform: translateY({BARRAS[0] - BARRAS[1]:.1f}px) scaleX({1 / CORTA:.5f}); opacity: 0; }}",
-    f"{abierto} .bar3 {{ transform: translateY({BARRAS[0] - BARRAS[2]:.1f}px); opacity: 0; }}",
+    f"{abierto} .bar2 {{ transform: translateY({EQ[0][1] - EQ[1][1]:.1f}px); opacity: 0; }}",
+    f"{abierto} .bar3 {{ transform: translateY({EQ[0][1] - EQ[2][1]:.1f}px); opacity: 0; }}",
     f"{abierto} .bar1 {{ opacity: 1; animation: hblink {ms(2 * PARPADEO)} steps(1) infinite; }}",
     "",
     "@media (prefers-reduced-motion: reduce) {",
@@ -267,8 +262,7 @@ letras_svg = f'<g class="wm-letters" fill="currentColor" stroke="currentColor" s
 # para la intro: solo SEKURECO con sus acentos teal (E y K), sin ventana, sin "≡" y sin cursor
 intro_svg = (f'<svg class="intro-wm-svg" viewBox="{vb_x} {vb_y} {vb_w:.0f} {vb_h}" aria-hidden="true" focusable="false">'
              f'{letras_svg}' + ''.join(r("la", v) for v in e_barras) + f'{e_palo_svg}{k_svg}</svg>')
-barras = ''.join(f'<rect class="bar bar{i + 1} la" x="{BX + (BARRA_W - w) / 2:.1f}" y="{y:.1f}" width="{w:.1f}" height="{BARRA_H:.1f}"/>'
-                 for i, (y, w) in enumerate(zip(BARRAS, [BARRA_W, BARRA_MEDIO_W, BARRA_W])))
+barras = ''.join(r(f"bar bar{i + 1} la", v) for i, v in enumerate(EQ))
 k_arms_svg = f'<path class="k-arms la la-s" stroke-width="{STK}" stroke-linejoin="miter" d="{arms_d}"/>'
 k_resto_svg = k_svg.replace(k_arms_svg, "")
 wm_svg = (f'<svg class="logo-wm" viewBox="{vb_x} {vb_y} {vb_w:.0f} {vb_h}" aria-hidden="true" focusable="false">'
@@ -295,7 +289,7 @@ open(BUILD / 'header.css', 'w').write(css)
 
 print(f'header ok · ">" final: borde izq {WIN_L:.1f} u, punta {TIP:.1f} u · bloque {T:.0f} u · telón {W0:.0f} → {W1:.0f} u')
 print(f'   alto del ">": {GT_ESC:.2f} px escritorio / {GT_CEL:.0f} px celular (logo {WM_ESC:.3f} / {WM_CEL:.3f} px)')
-print(f'   "≡": barras de {BARRA_W:.0f} × {BARRA_H:.1f} u (la del medio {BARRA_MEDIO_W:.0f} u, centrada) a {ESPACIO_U:.0f} u del ">" · opacidades {OPAC}')
+print(f'   "≡": las barras de la E ({", ".join(f"{w:.0f}" for _, _, w, _ in EQ)} × {EQ[0][3]:.0f} u, con el trazo) a {ESPACIO_U:.0f} u del ">" · opacidades {OPAC}')
 print('   línea de tiempo (ms desde hdr-play):')
 for t, ev in sorted((t, ev) for ev, t in [("arranca el bloque, el telón y el fundido de unión y palo", S0),
               ("unión y palo del K ya no se ven", S0 + FUNDIDO),

@@ -727,10 +727,9 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 @keyframes hfundeE2 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(704.0px); } }
 @keyframes hfundeE3 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(1376.0px); } }
 .hdr-play .top .cur-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
-.top .e-cur { transform-box: fill-box; transform-origin: 0 100%; }
 .hdr-play .top .e-cur { animation: hviaja 0.65s cubic-bezier(.15, .3, .25, 1) 0.65s both, hentrega .01s steps(1, jump-start) 1.3s forwards; }
-@keyframes hviaja { to { transform: translateX(4227.1px) scale(1.37924, 1.03891); } }
-/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (misma posición y tamaño): es el cursor */
+@keyframes hviaja { to { transform: translateX(4253.1px); } }
+/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (la misma barra, en el mismo lugar): es el cursor */
 @keyframes hentrega { to { opacity: 0; } }
 @keyframes hbloque { to { transform: translateX(-4946px); } }
 @keyframes htelon { from { width: 18027.3px; } to { width: 1609.0px; } }
@@ -758,12 +757,11 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 @media (hover: hover) and (pointer: fine) {
   .hdr-done .top .menu-btn:hover .bar { opacity: 1; }
 }
-/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan y se
+/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan (sin cambiar de largo) y se
    funden en la de abajo, que queda como un "_" titilando (530 / 530 ms) */
 .hdr-done .top .menu-btn[aria-expanded="true"] .k-arms { transform: translate(-60px, -60px) rotate(-90deg); }
-.top .bar2 { transform-box: fill-box; transform-origin: center; }
-.hdr-done .top .menu-btn[aria-expanded="true"] .bar2 { transform: translateY(684.1px) scaleX(1.27202); opacity: 0; }
-.hdr-done .top .menu-btn[aria-expanded="true"] .bar3 { transform: translateY(1368.3px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar2 { transform: translateY(704.0px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar3 { transform: translateY(1376.0px); opacity: 0; }
 .hdr-done .top .menu-btn[aria-expanded="true"] .bar1 { opacity: 1; animation: hblink 0.652s steps(1) infinite; }
 
 @media (prefers-reduced-motion: reduce) {
