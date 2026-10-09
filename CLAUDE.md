@@ -79,17 +79,20 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 ## Animaciones (decididas con Pato; no cambiar sin consultarle)
 
-**Intro (solo el escudo, como ícono de carga):**
+**Intro (SEKURECO + escudo bajo fuego):**
 - Loop de 5 s. El primer impacto cae a los 0,37 s. Dos ráfagas de 3 tiros a 92 bpm (0,652 s entre tiros), separadas por una pausa de 0,37 s (la última queda en 0,347 s para cerrar justo en 5 s).
 - Balas chicas, de a una, que llegan de frente girando (vuelo 0,33 s). Sin fogonazo ni halos.
 - Cada bala pega a 90° y se abre en un disco de chispas y esquirlas metálicas que se expande rotando en espiral (por el giro de la bala), se frena y se apaga. Nada queda orbitando. Todas giran para el mismo lado. Las esquirlas giran sobre su eje y dan vueltas de campana, frenándose.
 - Latido suave (doble, cada 1,7 s) desde la primera pausa.
-- Dura como mínimo un loop y sigue mientras la página no terminó de cargar. Una vez por sesión, se salta con un toque o una tecla, no aparece con "reducir movimiento" ni sin JS.
+- Al centro, SEKURECO al lado del escudo (misma proporción que en el header). Al terminar, las dos piezas se achican y viajan cada una a su lugar en el header (SEKURECO a la izquierda, escudo a la derecha) mientras el fondo se desvanece; aterrizan exactamente sobre el logo del header y ahí arranca el cierre de puertas.
+- Dura como mínimo 3 balazos: el vuelo sale 3,0 s después de que arranca la animación, con el espiral del último impacto ya apagado (los tiempos se cuentan desde el primer render, no desde la navegación). Del 4º disparo no se ve nada. Si la página no cargó, sigue el fuego hasta que cargue. Mientras dura, la página no scrollea. Una vez por sesión, se salta con un toque o una tecla, no aparece con "reducir movimiento" ni sin JS.
 
 **Header:**
-- Escudo (link al inicio) + SEKURECO. Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; el "<" se da vuelta y queda ">_" con el cursor titilando, en la posición del K.
-- ">_" es el botón del menú desplegable (Servicios, Cómo trabajamos, Cómo elegimos, Contacto). Al abrir, el ">" gira y apunta hacia abajo. Se cierra con Esc, tocando afuera o eligiendo una sección.
+- A la izquierda SEKURECO; a la derecha el botón de tema y el escudo (link al inicio). Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; la unión horizontal del K se desvanece, el "<" se da vuelta en un ">" limpio (sin "-" en la punta), se desliza hasta el borde izquierdo y queda ">_" con el cursor titilando.
+- ">_" es el botón del menú desplegable (Servicios, Cómo trabajamos, Cómo elegimos, Contacto). Al lado lleva la etiqueta "menú" en gris (se aclara al pasar o con el menú abierto), porque el público no técnico no reconoce el prompt como menú; aparece cuando el ">_" terminó de deslizarse. Al abrir, el ">" gira y apunta hacia abajo. Se cierra con Esc, tocando afuera o eligiendo una sección.
 - El cierre se ve una vez por sesión; después el header arranca ya en ">_". Sin JS se ve SEKURECO completo.
+
+**Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
 
 **Hero:** visor de cámara animado (una persona cruza, entra a la zona 1 y se dispara el aviso) con reloj en vivo de Buenos Aires.
 

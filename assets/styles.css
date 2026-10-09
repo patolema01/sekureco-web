@@ -78,6 +78,9 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* los botones no heredan la tipografía: sin esto usan la fuente del sistema */
+button { font: inherit; }
+
 h1, h2, h3 {
   margin: 0;
   font-stretch: 125%;
@@ -445,6 +448,7 @@ a { color: inherit; }
 /* ---------- selector de tema ---------- */
 
 .top-nav { display: flex; align-items: center; gap: 20px; }
+.top-nav .brand { margin-left: 4px; }
 .theme-btn {
   display: inline-grid;
   place-items: center;
@@ -517,16 +521,42 @@ a { color: inherit; }
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--hero);
   color: var(--mist);
   cursor: pointer;
   animation: ovOut .7s ease 8s forwards;    /* red de seguridad si el JS no corre */
 }
+/* mientras dura la intro la página no scrollea: el visitante arranca siempre arriba.
+   "intro-lock" la pone y la saca main.js: si el JS no corre, no hay bloqueo */
+html.intro-lock { overflow: hidden; }
+/* el fondo es una capa aparte: en la transición se desvanece mientras el logo viaja al header */
+.intro-bg { position: absolute; inset: 0; background: var(--hero); }
 .intro .intro-ov.out { animation: ovOut .7s ease forwards; }
 @keyframes ovOut { to { opacity: 0; visibility: hidden; } }
 
-/* centro óptico: el conjunto queda apenas por encima del centro geométrico */
-.intro-svg { width: min(82vmin, 560px); height: auto; margin-top: -8vh; overflow: visible; }
+/* SEKURECO al lado del escudo, con la misma proporción que en el header (palabra = ½ escudo),
+   así la transición escala las dos piezas igual. Centro óptico: un poco arriba del centro. */
+.intro-lockup {
+  --is: min(150px, calc((100vw - 48px) / 6.6));
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--is) * .3);
+  margin-top: -8vh;
+}
+.intro-svg { height: var(--is); width: auto; overflow: visible; transform-origin: 0 0; }
+.intro-wm-svg { height: calc(var(--is) / 2); width: auto; overflow: visible; transform-origin: 0 0; }
+/* durante la intro el logo del header no se ve: lo reemplaza el que viaja desde el centro */
+.intro .top .logo-wm, .intro .top .logo-shield { visibility: hidden; }
+/* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
+.leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip { opacity: 0; transition: opacity .25s ease; }
+/* a los 2,2 s desde el arranque de la animación, si ya cargó, main.js corta el fuego:
+   no se ve nada del 4º disparo en adelante (bala, fragmentos, esquirlas ni sacudida);
+   lo del 3er impacto termina su recorrido. visibility y no opacity: las animaciones
+   de cada pieza pisan la opacidad */
+.cease .bl { visibility: hidden; }
+.cease .late { visibility: hidden; }
+.cease .sk3, .cease .sk4, .cease .sk5 { animation: none; }
+.leaving .beat, .leaving .beat g, .leaving .beat-r { animation: none !important; }
 .intro-skip {
   position: absolute;
   left: 0; right: 0; bottom: var(--sp4);
@@ -759,7 +789,8 @@ a { color: inherit; }
   .steps { grid-template-columns: 1fr; gap: var(--sp4); }
 }
 
-/* ---------- header: escudo + SEKURECO que se cierra en ">_" (botón del menú) ---------- */
+/* ---------- header: SEKURECO que se cierra en ">_" (botón del menú) a la izquierda,
+   escudo (link al inicio) a la derecha ---------- */
 
 .top { --hs: 34px; position: relative; z-index: 20; }
 .brand-row { position: relative; display: flex; align-items: center; gap: 14px; }
@@ -785,7 +816,14 @@ a { color: inherit; }
 /* se cierra una vez por sesión, después de la intro */
 .hdr-play .door { animation: hdoor 1.02s cubic-bezier(.7, 0, .25, 1) .5s both; }
 .hdr-play .logo-wm .k-arms { animation: hflip .5s cubic-bezier(.6, 0, .2, 1) 1.62s both; }
-.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.17s infinite; }
+/* la unión horizontal del K se va con las puertas: el ">" queda limpio, sin "-" en la punta */
+.hdr-play .k-join { animation: hjoin .6s ease .9s both; }
+@keyframes hjoin { to { opacity: 0; } }
+.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.7s infinite; }
+/* con el escudo a la derecha, el ">_" se desliza hasta el borde izquierdo
+   (1,441 × --hs es la distancia del ">" al inicio del logo) */
+.hdr-play .logo-wm { animation: hslide .5s cubic-bezier(.65, 0, .35, 1) 2.15s both; }
+@keyframes hslide { to { transform: translateX(calc(var(--hs) * -1.441)); } }
 @keyframes hdoor { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes hflip { from { transform: scaleX(1); } to { transform: scaleX(-1); } }
 @keyframes hblink { 0% { opacity: 1; } 50% { opacity: 0; } }
@@ -793,7 +831,31 @@ a { color: inherit; }
 /* estado final (y el de cualquier otra página vista en la sesión) */
 .hdr-done .door { transform: scaleX(1); }
 .hdr-done .logo-wm .k-arms { transform: scaleX(-1); }
+.hdr-done .k-join { opacity: 0; }
+.hdr-done .logo-wm { transform: translateX(calc(var(--hs) * -1.441)); }
 .hdr-done .hcur { animation: hblink 1.06s steps(1) infinite; }
+
+/* etiqueta "menú" al lado del ">_": el público no técnico no reconoce el prompt como menú.
+   Aparece cuando el ">_" ya se deslizó; sin JS no se ve (queda SEKURECO completo) */
+.menu-btn { position: relative; }
+.menu-label {
+  position: absolute;
+  top: 50%;
+  left: calc(4px + var(--hs) * .778 + 8px);   /* justo después del "_" ya desplazado */
+  transform: translateY(-50%);
+  font-size: .8125rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: #8FA2B0;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+.hdr-play .menu-label { animation: hlabel .4s ease 2.7s both; }
+@keyframes hlabel { to { opacity: 1; } }
+.hdr-done .menu-label { opacity: 1; }
+.menu-btn:hover .menu-label, .menu-btn[aria-expanded="true"] .menu-label { color: var(--mist); }
+@media (prefers-reduced-motion: reduce) { .hdr-play .menu-label { animation: none; opacity: 1; } }
 
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
 .hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
@@ -802,7 +864,7 @@ a { color: inherit; }
 .menu {
   position: absolute;
   top: calc(100% + 14px);
-  left: calc(var(--hs) * 2.277 - 2px);   /* alineado bajo el ">_" */
+  left: -16px;   /* el ">" de las opciones queda bajo el ">_" */
   min-width: 230px;
   padding: 8px;
   background: #13263C;
@@ -836,5 +898,15 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .hdr-play .door { animation: none; transform: scaleX(1); }
   .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
+  .hdr-play .k-join { animation: none; opacity: 0; }
+  .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
+}
+
+/* ---------- indicador de carga reutilizable (SK.cargando) ---------- */
+/* El escudo bajo fuego en chico. El tamaño lo define el contenedor con --sk-size. */
+.sk-loader { display: inline-grid; place-items: center; width: var(--sk-size, 64px); height: var(--sk-size, 64px); color: inherit; }
+.sk-loader-svg { height: 62%; width: auto; overflow: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .sk-loader-svg * { animation: none !important; }
 }

@@ -34,7 +34,7 @@ COMP = (3 * BEAT + PAUSE) - 2 * BEAT       # ...y las puertas terminan de cerrar
 T_FLIP = T_COMP + COMP + .1
 T_SHIFT = T_COMP + COMP
 T_CUR = T_FLIP + .55
-T_MIN = P                                  # la intro dura como mínimo un loop (y hasta que cargue)
+T_MIN = 3.0                                # 3 balazos: el vuelo sale 3,0 s después de que arranca la animación (3er espiral ya apagado); después, hasta que cargue
 
 css, shots = [], []
 for gstart, pat in PATTERNS:
@@ -46,6 +46,12 @@ pct = lambda sec: f"{sec / P * 100:.2f}%"
 imp = FLIGHT / P * 100                       # % del ciclo en que impacta
 
 # ---------- disparos en loop ----------
+# del 4º disparo en adelante (índice >= 3) los fragmentos y las esquirlas llevan "late":
+# si la página ya cargó, main.js agrega "cease" a los 2,2 s y no se ve nada del 4º impacto
+N_VISIBLES = 3
+LATE = lambda k: " late" if k >= N_VISIBLES else ""
+# la sacudida del escudo de esos disparos se corta aparte: esconder su grupo escondería el escudo
+SK_LATE = ", ".join(f".cease .sk{k}" for k in range(N_VISIBLES, len(shots)))
 bullets, debris, shakes_open, shakes_close = [], [], [], []
 for k, (t, hx, hy) in enumerate(shots):
     delay = t - FLIGHT
@@ -59,7 +65,7 @@ for k, (t, hx, hy) in enumerate(shots):
     for j in range(rnd.randint(4, 7)):
         a = rnd.uniform(0, 360); d = rnd.uniform(150, 300); dur = rnd.uniform(.5, 1.0)
         nm = f'dd{k}_{j}'
-        debris.append(f'<g transform="translate({hx} {hy}) rotate({a:.0f})"><line class="db {nm}" x1="0" y1="0" x2="7" y2="0"/></g>')
+        debris.append(f'<g transform="translate({hx} {hy}) rotate({a:.0f})"><line class="db {nm}{LATE(k)}" x1="0" y1="0" x2="7" y2="0"/></g>')
         e = imp + dur / P * 100
         css.append(f'.{nm}{{animation:{nm} {P}s linear {delay:.2f}s infinite}}'
                    f'@keyframes {nm}{{0%,{imp:.2f}%{{opacity:0;transform:translateX(10px) scaleX(2.5)}}'
@@ -129,7 +135,7 @@ for k, (t_imp, hx, hy) in enumerate(shots):
             el = f'<g class="sh {nm}"><g class="tb{nfr}"><polygon points="{" ".join(pts)}"/></g></g>'
         frs.append(f'<g transform="rotate({a:.1f})">{el}</g>')
         nfr += 1
-    bursts.append(f'<g transform="translate({hx} {hy})"><g class="sw{k}">{"".join(frs)}</g></g>')
+    bursts.append(f'<g transform="translate({hx} {hy})"><g class="sw{k}{LATE(k)}">{"".join(frs)}</g></g>')
 n = nfr
 
 # ---------- SEKURECO, letra por letra, para compactarla hacia el K ----------
@@ -173,12 +179,21 @@ ws = 520 / ww; wx = CX - 270; base = 770 + capH * ws
 
 sh_inner = shield("ld", "currentColor", "var(--acc)", shx, shy, s).replace('fill="var(--acc)"', 'class="la"')
 
+# viewBox ajustado al escudo (los fragmentos desbordan con overflow visible): así el
+# escudo mide exactamente lo que mide el <svg> y se alinea con SEKURECO.
+# {{WORDMARK}} lo reemplaza apply.py con el mismo SEKURECO del header, para que la
+# transición al header calce al píxel.
+vb = f"{shx - 6:.0f} {shy - 6:.0f} {732 * s + 12:.0f} {840 * s + 12:.0f}"
 svg = f'''<div class="intro-ov" id="intro" aria-hidden="true">
-  <svg class="intro-svg" viewBox="0 0 1000 1000" focusable="false">
-    <g class="beat">{''.join(shakes_open)}<g class="sh-in">{sh_inner}</g>{''.join(shakes_close)}</g>
-    <g transform="translate({CX} {CY})"><g class="beat-r">{''.join(bursts)}</g></g>
-    <g transform="translate({CX} {CY})">{''.join(debris)}{''.join(bullets)}</g>
-  </svg>
+  <div class="intro-bg"></div>
+  <div class="intro-lockup">
+    {{{{WORDMARK}}}}
+    <svg class="intro-svg" viewBox="{vb}" focusable="false">
+      <g class="beat">{''.join(shakes_open)}<g class="sh-in">{sh_inner}</g>{''.join(shakes_close)}</g>
+      <g class="ib-frag" transform="translate({CX} {CY})"><g class="beat-r">{''.join(bursts)}</g></g>
+      <g class="ib-bul" transform="translate({CX} {CY})">{''.join(debris)}{''.join(bullets)}</g>
+    </svg>
+  </div>
   <span class="intro-skip">Tocá o presioná una tecla para saltar</span>
 </div>'''
 
@@ -192,16 +207,42 @@ static_css = f'''/* ---------- intro: el escudo bajo fuego mientras carga ------
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--hero);
   color: var(--mist);
   cursor: pointer;
   animation: ovOut .7s ease 8s forwards;    /* red de seguridad si el JS no corre */
 }}
+/* mientras dura la intro la página no scrollea: el visitante arranca siempre arriba.
+   "intro-lock" la pone y la saca main.js: si el JS no corre, no hay bloqueo */
+html.intro-lock {{ overflow: hidden; }}
+/* el fondo es una capa aparte: en la transición se desvanece mientras el logo viaja al header */
+.intro-bg {{ position: absolute; inset: 0; background: var(--hero); }}
 .intro .intro-ov.out {{ animation: ovOut .7s ease forwards; }}
 @keyframes ovOut {{ to {{ opacity: 0; visibility: hidden; }} }}
 
-/* centro óptico: el conjunto queda apenas por encima del centro geométrico */
-.intro-svg {{ width: min(82vmin, 560px); height: auto; margin-top: -8vh; overflow: visible; }}
+/* SEKURECO al lado del escudo, con la misma proporción que en el header (palabra = ½ escudo),
+   así la transición escala las dos piezas igual. Centro óptico: un poco arriba del centro. */
+.intro-lockup {{
+  --is: min(150px, calc((100vw - 48px) / 6.6));
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--is) * .3);
+  margin-top: -8vh;
+}}
+.intro-svg {{ height: var(--is); width: auto; overflow: visible; transform-origin: 0 0; }}
+.intro-wm-svg {{ height: calc(var(--is) / 2); width: auto; overflow: visible; transform-origin: 0 0; }}
+/* durante la intro el logo del header no se ve: lo reemplaza el que viaja desde el centro */
+.intro .top .logo-wm, .intro .top .logo-shield {{ visibility: hidden; }}
+/* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
+.leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip {{ opacity: 0; transition: opacity .25s ease; }}
+/* a los 2,2 s desde el arranque de la animación, si ya cargó, main.js corta el fuego:
+   no se ve nada del 4º disparo en adelante (bala, fragmentos, esquirlas ni sacudida);
+   lo del 3er impacto termina su recorrido. visibility y no opacity: las animaciones
+   de cada pieza pisan la opacidad */
+.cease .bl {{ visibility: hidden; }}
+.cease .late {{ visibility: hidden; }}
+{SK_LATE} {{ animation: none; }}
+.leaving .beat, .leaving .beat g, .leaving .beat-r {{ animation: none !important; }}
 .intro-skip {{
   position: absolute;
   left: 0; right: 0; bottom: var(--sp4);
