@@ -46,7 +46,7 @@ SSL Full (strict) y Always Use HTTPS.
 index.html  404.html  favicon.svg  _headers  robots.txt  .well-known/security.txt
 assets/styles.css     todo el CSS
 assets/theme.js       corre antes de pintar: tema guardado, si hay intro, estado del header
-assets/main.js        reloj del visor, selector de tema, intro, menú ">_"
+assets/main.js        selector de tema, intro, menú ">_", header que se esconde al bajar
 assets/fonts/         Archivo (OFL), servida desde el propio dominio
 assets/brand/         logo en SVG (vertical, horizontal, blanco, mono, escudo, icono)
 tools/                generadores de logo, intro y header
@@ -95,7 +95,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
 
-**Hero:** visor de cámara animado (una persona cruza, entra a la zona 1 y se dispara el aviso) con reloj en vivo de Buenos Aires.
+**Hero:** título, bajada y botones en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
 
 ## Pendientes y decisiones abiertas
 

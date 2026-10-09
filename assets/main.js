@@ -1,4 +1,4 @@
-// sekureco — reloj del visor de cámara y selector de tema.
+// sekureco — selector de tema, intro, menú ">_" y header que se esconde al bajar.
 // No usa cookies, no hace pedidos de red y no carga nada de terceros.
 // Lo único que guarda es la preferencia de tema, en el navegador del visitante.
 (function () {
@@ -26,30 +26,6 @@
   });
   if (mq && mq.addEventListener) mq.addEventListener("change", sync);
   sync();
-})();
-
-(function () {
-  "use strict";
-  var el = document.getElementById("feed-clock");
-  if (!el) return;
-
-  var fmt;
-  try {
-    fmt = new Intl.DateTimeFormat("es-AR", {
-      timeZone: "America/Argentina/Buenos_Aires",
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
-      hour12: false
-    });
-  } catch (e) {
-    return;
-  }
-
-  function tick() {
-    el.textContent = fmt.format(new Date()).replace(",", "");
-  }
-  tick();
-  setInterval(tick, 1000);
 })();
 
 // Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar (y como
