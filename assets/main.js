@@ -1,4 +1,4 @@
-// sekureco — reloj del visor de cámara y selector de tema.
+// sekureco — selector de tema, intro, menú ">_" y header que se esconde al bajar.
 // No usa cookies, no hace pedidos de red y no carga nada de terceros.
 // Lo único que guarda es la preferencia de tema, en el navegador del visitante.
 (function () {
@@ -26,30 +26,6 @@
   });
   if (mq && mq.addEventListener) mq.addEventListener("change", sync);
   sync();
-})();
-
-(function () {
-  "use strict";
-  var el = document.getElementById("feed-clock");
-  if (!el) return;
-
-  var fmt;
-  try {
-    fmt = new Intl.DateTimeFormat("es-AR", {
-      timeZone: "America/Argentina/Buenos_Aires",
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
-      hour12: false
-    });
-  } catch (e) {
-    return;
-  }
-
-  function tick() {
-    el.textContent = fmt.format(new Date()).replace(",", "");
-  }
-  tick();
-  setInterval(tick, 1000);
 })();
 
 // Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar (y como
@@ -240,4 +216,42 @@ window.SK.cargando = (function () {
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !menu.hasAttribute("hidden")) { setOpen(false); btn.focus(); }
   });
+})();
+
+// Header: se esconde al bajar y vuelve al subir. Con scroll > 0 "flota" (sombra y cursor fijo).
+// Un solo listener pasivo y el trabajo en requestAnimationFrame. No se esconde con el menú
+// abierto, durante la intro ni con el foco adentro del header (teclado).
+(function () {
+  "use strict";
+  var top = document.querySelector(".top");
+  if (!top || !window.requestAnimationFrame) return;
+  var root = document.documentElement;
+  var btn = document.getElementById("menu-btn");
+  var DELTA = 8, MIN_Y = 120;
+  var last = window.scrollY, ticking = false;
+
+  function fijo() {
+    return root.classList.contains("intro") ||
+      (btn && btn.getAttribute("aria-expanded") === "true") ||
+      top.contains(document.activeElement);
+  }
+
+  function update() {
+    ticking = false;
+    var y = Math.max(0, window.scrollY);
+    top.classList.toggle("top-float", y > 0);
+    if (y <= MIN_Y) { top.classList.remove("top-hidden"); last = y; return; }
+    var dy = y - last;
+    if (Math.abs(dy) <= DELTA) return;          // los movimientos chicos se acumulan
+    if (dy > 0 && !fijo()) top.classList.add("top-hidden");
+    else if (dy < 0) top.classList.remove("top-hidden");
+    last = y;
+  }
+
+  window.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  // si el foco entra al header (Shift+Tab desde el contenido), que se vea
+  top.addEventListener("focusin", function () { top.classList.remove("top-hidden"); });
+  update();
 })();

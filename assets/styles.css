@@ -112,7 +112,7 @@ a { color: inherit; }
   padding: 8px 14px;
   background: var(--mist);
   color: var(--navy);
-  z-index: 10;
+  z-index: 30;   /* por encima del header (20) */
   border-radius: var(--radius);
 }
 .skip:focus { top: 12px; }
@@ -148,13 +148,8 @@ a { color: inherit; }
   color: var(--mist);
   padding: clamp(var(--sp5), 7vw, var(--sp6)) 0 clamp(var(--sp6), 10vw, var(--sp7));
 }
-.hero-in {
-  display: grid;
-  /* 61,8 % texto / 38,2 % visor; el visor baja para no quedar alineado al título */
-  grid-template-columns: minmax(0, var(--phi)) minmax(0, 1fr);
-  gap: clamp(var(--sp4), 5vw, var(--sp6));
-  align-items: start;
-}
+/* el texto ocupa la columna áurea (61,8 %); la derecha queda libre para una foto real */
+.hero-copy { max-width: 61.8%; }
 .hero h1 {
   font-size: clamp(2.6rem, 5.4vw, 4.5rem);
   max-width: 12ch;
@@ -192,113 +187,6 @@ a { color: inherit; }
   transition: border-color .2s;
 }
 .btn-ghost:hover { border-bottom-color: var(--teal-light); }
-
-/* ---------- la cámara ---------- */
-
-.feed { margin: var(--sp6) 0 0; }
-.feed-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  border: 1px solid #2A405C;
-}
-.feed figcaption {
-  margin-top: 12px;
-  font-size: .9375rem;
-  color: #8FA2B0;
-}
-
-.f-bg { fill: #0F1C2D; }
-.f-scene path, .f-scene rect {
-  fill: none;
-  stroke: #33496A;
-  stroke-width: 1.5;
-}
-.f-zone {
-  fill: var(--teal-light);
-  fill-opacity: .05;
-  stroke: var(--teal-light);
-  stroke-opacity: .55;
-  stroke-width: 1.5;
-  stroke-dasharray: 6 5;
-  animation: zone 10s linear infinite;
-}
-.f-zone-label {
-  fill: var(--teal-light);
-  font: 500 11px "Archivo", sans-serif;
-  opacity: .8;
-}
-.f-walker {
-  transform: translate(-80px, 316px);
-  animation: walk 10s linear infinite;
-}
-.f-person circle { fill: #9FB2C2; }
-.f-person path {
-  fill: none;
-  stroke: #9FB2C2;
-  stroke-width: 6;
-  stroke-linecap: round;
-}
-.f-box path {
-  fill: none;
-  stroke: #E8EEF0;
-  stroke-width: 2;
-  animation: box 10s linear infinite;
-}
-.f-tag { fill: #E8EEF0; animation: tag 10s linear infinite; }
-.f-tag-text { fill: var(--navy); font: 600 11px "Archivo", sans-serif; }
-.f-scan {
-  fill: var(--teal-light);
-  opacity: .12;
-  animation: scan 6s linear infinite;
-}
-.f-osd text {
-  fill: #C4D1D6;
-  font: 500 13px "Archivo", sans-serif;
-  font-variant-numeric: tabular-nums;
-  white-space: pre;
-}
-.f-rec { fill: #E5484D; animation: rec 1.6s steps(1) infinite; }
-.f-osd .f-alert {
-  fill: var(--teal-light);
-  opacity: 0;
-  animation: alert 10s linear infinite;
-}
-
-/* la persona cruza el cuadro en 10 s; entre 47 % y 68 % pisa la zona 1 */
-@keyframes walk {
-  from { transform: translate(-80px, 316px); }
-  to   { transform: translate(720px, 316px); }
-}
-@keyframes zone {
-  0%, 47%   { fill-opacity: .05; stroke-dasharray: 6 5; }
-  48%, 67%  { fill-opacity: .22; stroke-dasharray: none; }
-  68%, 100% { fill-opacity: .05; stroke-dasharray: 6 5; }
-}
-@keyframes box {
-  0%, 47%   { stroke: #E8EEF0; }
-  48%, 67%  { stroke: var(--teal-light); }
-  68%, 100% { stroke: #E8EEF0; }
-}
-@keyframes tag {
-  0%, 47%   { fill: #E8EEF0; }
-  48%, 67%  { fill: var(--teal-light); }
-  68%, 100% { fill: #E8EEF0; }
-}
-@keyframes alert {
-  0%, 49%   { opacity: 0; }
-  50%, 84%  { opacity: 1; }
-  88%, 100% { opacity: 0; }
-}
-@keyframes scan {
-  from { transform: translateY(0); }
-  to   { transform: translateY(398px); }
-}
-@keyframes rec {
-  0%   { opacity: 1; }
-  50%  { opacity: .2; }
-}
 
 /* ---------- secciones ---------- */
 
@@ -411,10 +299,10 @@ a { color: inherit; }
 /* ---------- responsive ---------- */
 
 @media (max-width: 900px) {
-  .hero-in, .sec-grid { grid-template-columns: 1fr; }
+  .hero-copy { max-width: none; }
+  .sec-grid { grid-template-columns: 1fr; }
   .sec-grid > h2 { position: static; }
   .sec-body { grid-column: 1; }
-  .feed { margin-top: 0; }
 }
 @media (max-width: 600px) {
   .services { grid-template-columns: 1fr; }
@@ -424,13 +312,6 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .f-walker, .f-zone, .f-box path, .f-tag, .f-scan, .f-rec, .f-osd .f-alert { animation: none; }
-  .f-walker { transform: translate(380px, 316px); }
-  .f-zone { fill-opacity: .22; stroke-dasharray: none; }
-  .f-box path { stroke: var(--teal-light); }
-  .f-tag { fill: var(--teal-light); }
-  .f-osd .f-alert { opacity: 1; }
-  .f-scan { display: none; }
   .cursor { animation: none; }
   .k-arms { transition: none; }
 }
@@ -792,7 +673,14 @@ html.intro-lock { overflow: hidden; }
 /* ---------- header: SEKURECO que se cierra en ">_" (botón del menú) a la izquierda,
    escudo (link al inicio) a la derecha ---------- */
 
-.top { --hs: 34px; position: relative; z-index: 20; }
+.top { --hs: 34px; position: sticky; top: 0; z-index: 20; transition: transform .25s ease; }
+/* se esconde al bajar y vuelve al subir (main.js); "flotando" = la página no está arriba de todo */
+.top-hidden { transform: translateY(-100%); }
+.top-float { box-shadow: 0 6px 18px rgba(15, 32, 50, .22); }
+/* con el header visible y flotando, los títulos sticky de sección (solo > 900 px, donde el
+   header mide 76 px) bajan para no quedar debajo */
+.sec-grid > h2 { transition: top .25s ease; }
+html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp4)); }
 .brand-row { position: relative; display: flex; align-items: center; gap: 14px; }
 .logo-shield { height: var(--hs); width: auto; display: block; }
 .menu-btn {
@@ -860,6 +748,9 @@ html.intro-lock { overflow: hidden; }
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
 .hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
 .menu-btn[aria-expanded="true"] .hcur { animation: none; opacity: 1; }
+/* flotando, el cursor queda fijo para no distraer mientras se lee; arriba de todo vuelve a titilar
+   (solo con el header ya cerrado en ">_": durante el cierre de puertas no se adelanta) */
+.hdr-done .top-float .hcur { animation: none; opacity: 1; }
 
 .menu {
   position: absolute;
@@ -895,12 +786,19 @@ html.intro-lock { overflow: hidden; }
 @media (max-width: 600px) {
   .top { --hs: 28px; }
 }
+
+/* los anchors del menú quedan debajo del header (76 px; 64 px en celular) */
+main section[id] { scroll-margin-top: calc(76px + var(--sp2)); }
+@media (max-width: 600px) {
+  main section[id] { scroll-margin-top: calc(64px + var(--sp2)); }
+}
 @media (prefers-reduced-motion: reduce) {
   .hdr-play .door { animation: none; transform: scaleX(1); }
   .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
   .hdr-play .k-join { animation: none; opacity: 0; }
   .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
+  .top, .sec-grid > h2 { transition: none; }   /* el header aparece y desaparece directo */
 }
 
 /* ---------- indicador de carga reutilizable (SK.cargando) ---------- */

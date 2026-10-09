@@ -15,7 +15,7 @@ robots.txt
 assets/
   styles.css          único CSS
   theme.js            corre antes de pintar: tema guardado y si se muestra la intro
-  main.js             reloj del visor, selector de tema y salto de la intro
+  main.js             selector de tema, intro, menú ">_" y header que se esconde al bajar
   fonts/archivo.woff2 tipografía Archivo (OFL), servida desde el propio dominio
   brand/              logo SEKURECO en SVG: vertical, horizontal, blanco, mono, escudo, icono
 tools/                scripts que generan logo, intro y header (ver tools/README.md)
@@ -35,7 +35,8 @@ CLAUDE.md             contexto completo del proyecto para Claude (y para cualqui
 
 - **Proporciones:** el contenido arranca siempre sobre la línea áurea (títulos en la columna de 38,2 %, contenido en la de 61,8 %). Tipografía en pasos de √φ y espaciado en la serie de Fibonacci (13, 21, 34, 55, 89, 144). Los paddings de sección son asimétricos a propósito.
 - **Intro:** el escudo recibe fuego continuo, en un loop de 5 s: el primer impacto cae a los 0,37 s y llegan dos ráfagas de 3 tiros a 92 bpm separadas por una pausa de 0,37 s; dura como mínimo 3 balazos: el vuelo sale 3,0 s después de que arranca la animación, con el espiral del último impacto ya apagado; si la página no cargó, sigue el fuego hasta que cargue; cada bala pega de frente (90°) y, por el giro que trae, se abre en un disco de chispas y esquirlas que se expande rotando en espiral, se frena y se apaga; nada queda orbitando (semilla fija); el conjunto late suave como un pulso en reposo. Al centro van SEKURECO y el escudo; al terminar se achican y viajan a su lugar en el header mientras el fondo se desvanece. El escudo bajo fuego, solo, es también el indicador de carga del sitio (`SK.cargando`). se ve una vez por sesión, se salta con un toque o una tecla y no aparece si el visitante tiene activado "reducir movimiento" o si el JS no carga.
-- **Header:** SEKURECO a la izquierda; botón de tema y escudo (link al inicio) a la derecha. Cuando termina la intro, dos puertas del color del fondo se cierran hacia el K cortando las letras, el "<" se da vuelta en un ">" limpio, se desliza al borde izquierdo y queda ">_" con el cursor titilando. Ese ">_" es el botón del menú, con la etiqueta "menú" al lado para quien no reconoce el prompt: al abrirlo, el ">" gira y apunta hacia abajo. El cierre se ve una vez por sesión; en el resto de las páginas el header ya arranca en ">_". Sin JS se ve SEKURECO completo.
+- **Header:** SEKURECO a la izquierda; botón de tema y escudo (link al inicio) a la derecha. Cuando termina la intro, dos puertas del color del fondo se cierran hacia el K cortando las letras, el "<" se da vuelta en un ">" limpio, se desliza al borde izquierdo y queda ">_" con el cursor titilando. Ese ">_" es el botón del menú, con la etiqueta "menú" al lado para quien no reconoce el prompt: al abrirlo, el ">" gira y apunta hacia abajo. El header es sticky: se esconde al bajar y vuelve al subir. El cierre se ve una vez por sesión; en el resto de las páginas el header ya arranca en ">_". Sin JS se ve SEKURECO completo.
+- **Hero:** el texto ocupa la columna áurea (61,8 %); la derecha espera fotos reales del banco de pruebas o de instalaciones.
 - **Prompt:** el ">" que aparece en la web (menú, título de Ciberseguridad) son los brazos del K invertidos.
 
 ## Cómo proponer un cambio (Leandro, Gonzalo)
