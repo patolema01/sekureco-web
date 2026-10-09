@@ -229,8 +229,9 @@ html.intro-lock {{ overflow: hidden; }}
 .intro .top .logo-wm, .intro .top .logo-shield {{ visibility: hidden; }}
 /* salida: se apagan balas y fragmentos y se frena el latido para medir sin movimiento */
 .leaving .ib-frag, .leaving .ib-bul, .leaving .intro-skip {{ opacity: 0; transition: opacity .25s ease; }}
-/* a los 2,3 s, si ya cargó, main.js corta el fuego: la 4ª bala (sale a los ~2,37 s) no se ve */
-.cease .ib-bul {{ opacity: 0; transition: opacity .15s ease; }}
+/* a los 2,3 s, si ya cargó, main.js corta el fuego: la 4ª bala (sale a los ~2,37 s) no se ve;
+   las esquirlas del 3er impacto terminan su recorrido */
+.cease .bl {{ visibility: hidden; }}   /* visibility y no opacity: la animación "bullet" pisa la opacidad */
 .leaving .beat, .leaving .beat g, .leaving .beat-r {{ animation: none !important; }}
 .intro-skip {{
   position: absolute;
