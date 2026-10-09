@@ -50,12 +50,14 @@
     root.classList.remove("intro-lock");
     root.classList.remove("intro");
     root.classList.add("hdr-play");
-    // cierre de puertas + "menú" que se escribe letra por letra (ver styles.css): a los 6 s
-    // queda el estado final, con el cursor en la fase encendida para que no se note el cambio
+    // cierre "ventana" + "menú" que se escribe letra por letra: la duración la calcula
+    // tools/header.py y la deja en --hdr-total; al terminar queda el estado final, con el
+    // cursor en la fase encendida para que no se note el cambio
+    var total = parseFloat(getComputedStyle(root).getPropertyValue("--hdr-total")) || 2600;
     setTimeout(function () {
       root.classList.remove("hdr-play");
       root.classList.add("hdr-done");
-    }, 6000);
+    }, total);
   }
 
   // traslación + escala que lleva el rectángulo "a" al "b", con origen arriba a la izquierda del elemento
