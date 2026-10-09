@@ -78,6 +78,9 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* los botones no heredan la tipografía: sin esto usan la fuente del sistema */
+button { font: inherit; }
+
 h1, h2, h3 {
   margin: 0;
   font-stretch: 125%;

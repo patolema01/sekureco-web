@@ -85,7 +85,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 - Cada bala pega a 90° y se abre en un disco de chispas y esquirlas metálicas que se expande rotando en espiral (por el giro de la bala), se frena y se apaga. Nada queda orbitando. Todas giran para el mismo lado. Las esquirlas giran sobre su eje y dan vueltas de campana, frenándose.
 - Latido suave (doble, cada 1,7 s) desde la primera pausa.
 - Al centro, SEKURECO al lado del escudo (misma proporción que en el header). Al terminar, las dos piezas se achican y viajan cada una a su lugar en el header (SEKURECO a la izquierda, escudo a la derecha) mientras el fondo se desvanece; aterrizan exactamente sobre el logo del header y ahí arranca el cierre de puertas.
-- Dura como mínimo un loop y sigue mientras la página no terminó de cargar. Mientras dura, la página no scrollea. Una vez por sesión, se salta con un toque o una tecla, no aparece con "reducir movimiento" ni sin JS.
+- Dura como mínimo hasta el 3er balazo, ~2,2 s; si la página no terminó de cargar, sigue el fuego hasta que cargue. Mientras dura, la página no scrollea. Una vez por sesión, se salta con un toque o una tecla, no aparece con "reducir movimiento" ni sin JS.
 
 **Header:**
 - A la izquierda SEKURECO; a la derecha el botón de tema y el escudo (link al inicio). Al terminar la intro, dos puertas del color del fondo se cierran desde los extremos hacia el K cortando las letras; la unión horizontal del K se desvanece, el "<" se da vuelta en un ">" limpio (sin "-" en la punta), se desliza hasta el borde izquierdo y queda ">_" con el cursor titilando.

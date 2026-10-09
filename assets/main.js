@@ -53,7 +53,7 @@
 })();
 
 // Intro: el escudo sigue bajo fuego hasta que la página terminó de cargar
-// (y como mínimo 5 s: un loop completo). Al terminar, SEKURECO y el escudo se achican
+// (y como mínimo hasta el 3er balazo, ~2,2 s). Al terminar, SEKURECO y el escudo se achican
 // y viajan cada uno a su lugar en el header (transición FLIP con Web Animations,
 // permitida por la CSP) mientras el fondo se desvanece. Se salta con un toque o una tecla.
 (function () {
@@ -61,7 +61,7 @@
   var ov = document.getElementById("intro");
   var root = document.documentElement;
   if (!ov || !root.classList.contains("intro")) return;
-  var MIN = 5000, FLY = 950, done = false, loaded = document.readyState === "complete";
+  var MIN = 2200, FLY = 950, done = false, loaded = document.readyState === "complete";
   var EASE = "cubic-bezier(.65, 0, .25, 1)";
   // bloquea el scroll mientras dura la intro; lo pone este script, así sin JS no hay bloqueo
   root.classList.add("intro-lock");

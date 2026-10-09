@@ -34,7 +34,7 @@ COMP = (3 * BEAT + PAUSE) - 2 * BEAT       # ...y las puertas terminan de cerrar
 T_FLIP = T_COMP + COMP + .1
 T_SHIFT = T_COMP + COMP
 T_CUR = T_FLIP + .55
-T_MIN = P                                  # la intro dura como mínimo un loop (y hasta que cargue)
+T_MIN = 2.2                                # como mínimo hasta el 3er balazo (T0 + 2·BEAT ≈ 1,67 s) y medio segundo de su impacto; después, hasta que cargue
 
 css, shots = [], []
 for gstart, pat in PATTERNS:
