@@ -31,6 +31,7 @@ Con los parámetros actuales el resultado es idéntico byte a byte al que está 
 | Geometría del escudo | `brand.py` | `O`, `I`, `ARM`, `DIAG` y los cortes |
 | Peso y espaciado de la palabra | `brand.py` | `STK`, `TRACK` |
 | Cierre de puertas del header | `assets/styles.css` | bloque "header: escudo + SEKURECO" |
+| Cursor "_" y tipeo de "menú" | `assets/styles.css` (bloque de la etiqueta) | tiempos en los `animation-delay`; la geometría del cursor la imprime `header.py` en unidades de `--hs` |
 
 `tools/fonts/michroma.woff2` (licencia OFL) se usa solo para generar los trazos del logo;
 el sitio no la carga.

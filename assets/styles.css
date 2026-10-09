@@ -699,7 +699,6 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .door { fill: var(--hero); transform-box: fill-box; transform: scaleX(0); }
 .door-l { transform-origin: left center; }
 .door-r { transform-origin: right center; }
-.hcur { fill: var(--teal-light); opacity: 0; }
 
 /* se cierra una vez por sesión, después de la intro */
 .hdr-play .door { animation: hdoor 1.02s cubic-bezier(.7, 0, .25, 1) .5s both; }
@@ -707,7 +706,6 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 /* la unión horizontal del K se va con las puertas: el ">" queda limpio, sin "-" en la punta */
 .hdr-play .k-join { animation: hjoin .6s ease .9s both; }
 @keyframes hjoin { to { opacity: 0; } }
-.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.7s infinite; }
 /* con el escudo a la derecha, el ">_" se desliza hasta el borde izquierdo
    (1,441 × --hs es la distancia del ">" al inicio del logo) */
 .hdr-play .logo-wm { animation: hslide .5s cubic-bezier(.65, 0, .35, 1) 2.15s both; }
@@ -721,36 +719,76 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .hdr-done .logo-wm .k-arms { transform: scaleX(-1); }
 .hdr-done .k-join { opacity: 0; }
 .hdr-done .logo-wm { transform: translateX(calc(var(--hs) * -1.441)); }
-.hdr-done .hcur { animation: hblink 1.06s steps(1) infinite; }
 
-/* etiqueta "menú" al lado del ">_": el público no técnico no reconoce el prompt como menú.
-   Aparece cuando el ">_" ya se deslizó; sin JS no se ve (queda SEKURECO completo) */
+/* etiqueta "menú": se escribe letra por letra, como en una terminal (el público no técnico no
+   reconoce el prompt como menú). Sin JS no se ve (queda SEKURECO completo); para lectores de
+   pantalla es aria-hidden.
+   El cursor "_" son cinco barras (.mc0 … .mc4: antes del espacio y detrás de cada letra) de las
+   que se ve UNA por vez: cada una aparece en su lugar justo cuando se apaga la anterior. Así el
+   cursor salta detrás de cada letra sin que ningún elemento visible se desplace (CLS 0).
+   .mc0 está donde estaba el "_" del logo. Geometría: la imprime tools/header.py (unidades de --hs). */
 .menu-btn { position: relative; }
 .menu-label {
+  --cw: calc(var(--hs) * .28555);                 /* ancho del cursor */
   position: absolute;
-  top: 50%;
-  left: calc(4px + var(--hs) * .778 + 8px);   /* justo después del "_" ya desplazado */
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  /* 4px de padding + x del "_" en el logo (1,93357) − deslizamiento (1,441) */
+  left: calc(4px + var(--hs) * .49257);
+  display: flex;
+  align-items: center;
   font-size: .8125rem;
   font-weight: 500;
   letter-spacing: .02em;
   color: #8FA2B0;
   white-space: nowrap;
-  opacity: 0;
   pointer-events: none;
+  visibility: hidden;
 }
-.hdr-play .menu-label { animation: hlabel .4s ease 2.7s both; }
-@keyframes hlabel { to { opacity: 1; } }
-.hdr-done .menu-label { opacity: 1; }
+.hdr-play .menu-label, .hdr-done .menu-label { visibility: visible; }
+/* el espacio entre ">" y "m": ancho del cursor + 8px, el mismo de antes entre ">_" y la etiqueta */
+.mgap { flex: none; width: calc(var(--cw) + 8px); }
+.mgap, .ml { max-width: 0; overflow: hidden; }
+.ml { flex: none; }
+.mc { flex: none; align-self: stretch; position: relative; width: 0; }
+.mcur {
+  position: absolute;
+  left: 0;
+  top: calc(6px + var(--hs) * .4155);             /* padding del botón + arriba del "_" en el logo */
+  width: 0;                                       /* apagada: sin tamaño */
+  height: calc(var(--hs) * .05828);
+  background: var(--teal-light);
+}
 .menu-btn:hover .menu-label, .menu-btn[aria-expanded="true"] .menu-label { color: var(--mist); }
-@media (prefers-reduced-motion: reduce) { .hdr-play .menu-label { animation: none; opacity: 1; } }
+
+/* primera vez en la sesión (hdr-play, segundos desde que arranca el cierre):
+   2,7 s el "_" aparece (como antes) y titila 2 veces (1,06 s cada una);
+   4,82 / 4,97 / 5,095 / 5,275 s aparecen m, e, n, ú (150 / 125 / 180 ms: ~163 ms, semicorchea
+   a 92 bpm, con algo de variación) y el cursor salta detrás de cada una, fijo mientras se escribe;
+   5,805 s vuelve a titilar. main.js pasa a hdr-done a los 6 s, en la fase encendida. */
+.hdr-play .mgap, .hdr-play .ml1 { animation: mtype .01s steps(1, jump-start) 4.82s both; }
+.hdr-play .ml2 { animation: mtype .01s steps(1, jump-start) 4.97s both; }
+.hdr-play .ml3 { animation: mtype .01s steps(1, jump-start) 5.095s both; }
+.hdr-play .ml4 { animation: mtype .01s steps(1, jump-start) 5.275s both; }
+@keyframes mtype { from { max-width: 0; } to { max-width: 2em; } }
+/* cada barra tiene ancho solo mientras le toca (sin fill: antes y después vuelve a 0) */
+.hdr-play .mc0 .mcur { animation: mon 2.12s 2.7s, mblink2 2.12s steps(1) 2.7s; }
+.hdr-play .mc1 .mcur { animation: mon .15s 4.82s; }
+.hdr-play .mc2 .mcur { animation: mon .125s 4.97s; }
+.hdr-play .mc3 .mcur { animation: mon .18s 5.095s; }
+.hdr-play .mc4 .mcur { animation: mon .01s 5.275s forwards, hblink 1.06s steps(1) 5.805s infinite; }
+@keyframes mon { from, to { width: var(--cw); } }
+@keyframes mblink2 { 0% { opacity: 1; } 25% { opacity: 0; } 50% { opacity: 1; } 75%, 100% { opacity: 0; } }
+/* visitas siguientes: "> menú_" ya escrito */
+.hdr-done .mgap, .hdr-done .ml { max-width: 2em; }
+.hdr-done .mc4 .mcur { width: var(--cw); animation: hblink 1.06s steps(1) infinite; }
 
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
 .hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
-.menu-btn[aria-expanded="true"] .hcur { animation: none; opacity: 1; }
+.menu-btn[aria-expanded="true"] .mc4 .mcur { animation: none; opacity: 1; }
 /* flotando, el cursor queda fijo para no distraer mientras se lee; arriba de todo vuelve a titilar
    (solo con el header ya cerrado en ">_": durante el cierre de puertas no se adelanta) */
-.hdr-done .top-float .hcur { animation: none; opacity: 1; }
+.hdr-done .top-float .mc4 .mcur { animation: none; opacity: 1; }
 
 .menu {
   position: absolute;
@@ -797,6 +835,10 @@ main section[id] { scroll-margin-top: calc(76px + var(--sp2)); }
   .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
   .hdr-play .k-join { animation: none; opacity: 0; }
   .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
+  /* "> menú_" estático, cursor sin titilar */
+  .hdr-play .mgap, .hdr-play .ml { animation: none; max-width: 2em; }
+  .hdr-play .mcur { animation: none; }
+  .hdr-play .mc4 .mcur, .hdr-done .mc4 .mcur { animation: none; width: var(--cw); opacity: 1; }
   .menu { animation: none; }
   .top, .sec-grid > h2 { transition: none; }   /* el header aparece y desaparece directo */
 }

@@ -50,10 +50,12 @@
     root.classList.remove("intro-lock");
     root.classList.remove("intro");
     root.classList.add("hdr-play");
+    // cierre de puertas + "menú" que se escribe letra por letra (ver styles.css): a los 6 s
+    // queda el estado final, con el cursor en la fase encendida para que no se note el cambio
     setTimeout(function () {
       root.classList.remove("hdr-play");
       root.classList.add("hdr-done");
-    }, 2800);
+    }, 6000);
   }
 
   // traslación + escala que lleva el rectángulo "a" al "b", con origen arriba a la izquierda del elemento
@@ -197,7 +199,14 @@ window.SK.cargando = (function () {
   var btn = document.getElementById("menu-btn");
   var menu = document.getElementById("menu");
   if (!btn || !menu) return;
+  var root = document.documentElement;
   function setOpen(open) {
+    // si se abre mientras el header todavía se está cerrando o escribiendo "menú", se
+    // completa de una: así el ">" gira como siempre y la etiqueta no cambia con el menú abierto
+    if (open && root.classList.contains("hdr-play")) {
+      root.classList.remove("hdr-play");
+      root.classList.add("hdr-done");
+    }
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) menu.removeAttribute("hidden"); else menu.setAttribute("hidden", "");
   }

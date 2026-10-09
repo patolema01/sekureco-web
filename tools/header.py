@@ -29,6 +29,9 @@ for i, ch in enumerate("SEKURECO"):
         letters.append(d)
     x += w + TRACK
 ww = x - TRACK
+# el cursor "_" ya no va en el SVG: es un elemento HTML (.mcur, en la etiqueta "menú") que
+# avanza detrás de las letras al tipear. Su geometría sigue saliendo de acá: el print del
+# final da los factores (en unidades de --hs) que usa styles.css para ubicarlo.
 cur_x0 = kx + 1952 + 260; cur_w, cur_h = 980, 200
 # la puerta izquierda llega hasta justo antes de la punta del chevron (x=522): así tapa el
 # asta con margen y el antialiasing no deja un hilo visible al lado del ">"
@@ -48,9 +51,11 @@ wm_svg = (f'<svg class="logo-wm" viewBox="{vb_x} {vb_y} {vb_w + pad:.0f} {vb_h}"
           f'<rect class="door door-l" x="{-pad - 20}" y="{vb_y}" width="{k_stem_right + pad + 20:.0f}" height="{vb_h}"/>'
           f'<rect class="door door-r" x="{k_arms_right:.0f}" y="{vb_y}" width="{ww + pad + 20 - k_arms_right:.0f}" height="{vb_h}"/>'
           f'<path class="k-join la la-s" stroke-width="{STK}" d="{join_d}"/>'
-          f'<path class="k-arms la la-s" stroke-width="{STK}" stroke-linejoin="miter" d="{arms_d}"/>'
-          f'<rect class="hcur" x="{cur_x0:.0f}" y="{-cur_h}" width="{cur_w}" height="{cur_h}"/></svg>')
+          f'<path class="k-arms la la-s" stroke-width="{STK}" stroke-linejoin="miter" d="{arms_d}"/></svg>')
 
 open(BUILD / 'header-shield.svg', 'w').write(shield_svg)
 open(BUILD / 'header-wordmark.svg', 'w').write(wm_svg)
+u = lambda v: round(v / vb_h * 0.5, 5)            # unidades del viewBox → unidades de --hs
 print('header ok · offset del ">" en unidades de --hs:', round((kx + 522 - vb_x) / vb_h * 0.5, 4))
+print(f'cursor .mcur (unidades de --hs, desde el borde del logo sin deslizar): x {u(cur_x0 - vb_x)}, '
+      f'ancho {u(cur_w)}, alto {u(cur_h)}, arriba {u(-cur_h - vb_y)}')
