@@ -693,108 +693,80 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
   color: var(--mist);
   cursor: pointer;
 }
-.logo-wm { height: calc(var(--hs) / 2); width: auto; display: block; overflow: visible; }
+.logo-wm { width: auto; display: block; overflow: visible; }   /* el alto lo da el bloque generado */
 
 @keyframes hblink { 0% { opacity: 1; } 50% { opacity: 0; } }
 
-/* etiqueta "menú": se escribe letra por letra, como en una terminal (el público no técnico no
-   reconoce el prompt como menú). Sin JS no se ve (queda SEKURECO completo); para lectores de
-   pantalla es aria-hidden. Tamaño, peso y posición son proporcionales al ">" (los calcula
-   tools/header.py). El cursor "_" son cinco barras (.mc0: donde va la "m"; .mc1 … .mc4: detrás
-   de cada letra) de las que se ve UNA por vez, cada una en su lugar: el cursor salta sin que
-   ningún elemento visible se desplace (CLS 0). */
+/* el botón del menú: ">≡" (el "≡" son tres barras del SVG). Objetivo táctil de 44 px como mínimo
+   con un área invisible que no cambia el layout */
 .menu-btn { position: relative; }
-.menu-label {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  letter-spacing: 0;
-  color: #8FA2B0;
-  white-space: nowrap;
-  pointer-events: none;
-  visibility: hidden;
-}
-.hdr-play .menu-label, .hdr-done .menu-label { visibility: visible; }
-.mgap { flex: none; }
-.ml { flex: none; max-width: 0; overflow: hidden; }
-.mc { flex: none; align-self: stretch; position: relative; width: 0; }
-.mcur { position: absolute; left: 0; width: 0; background: var(--teal-light); }   /* apagada: sin tamaño */
-.menu-btn:hover .menu-label, .menu-btn[aria-expanded="true"] .menu-label { color: var(--mist); }
+.menu-btn::before { content: ""; position: absolute; inset: -8px 0; }
 
-/* cierre "ventana", tipeo y geometría de la etiqueta: los genera tools/header.py */
+/* cierre "ventana", parpadeo del "≡", menú abierto y alto del logo: los genera tools/header.py */
 /* ---------- header (generado por tools/header.py: no editar a mano) ---------- */
 /* duración de la secuencia hasta hdr-done (main.js la lee) */
-:root { --hdr-total: 2535; }
+:root { --hdr-total: 3470; }
+
+/* alto del logo: el ">" (y el "≡") mide 21.62 px en escritorio y 17 px en celular */
+.top .logo-wm { height: 23.575px; }
+@media (max-width: 600px) { .top .logo-wm { height: 18.534px; } }
 
 /* el "<" rueda alrededor de un punto 60 u a la derecha de su centro (y se corre 120 u para compensar) */
 .top .k-arms { transform-origin: calc(50% + 60px) 50%; }
-
-/* etiqueta: altura de x = alto del ">" (0.45862 hs), línea de base en el borde inferior del ">",
-   Archivo 275; arranca en la punta del ">" y la "m" va un espacio (0.214 em) más allá */
-.menu-label {
-  --cw: calc(var(--hs) * 0.54494);          /* cursor: ancho promedio de letra de "menú" */
-  --ct: calc(var(--hs) * 0.05994);          /* cursor: grosor del trazo del ">" */
-  left: calc(4px + var(--hs) * 0.42649);
-  top: calc(6px + var(--hs) * -0.28622);
-  font-size: calc(var(--hs) * 0.87191);
-  font-weight: 275;
-  line-height: 1.088;                       /* = ascendente + descendente: la base queda a 0.878 em */
-}
-.mgap { width: calc(var(--hs) * 0.18659); }
-.mcur { top: calc(var(--hs) * 0.76554 - var(--ct)); height: var(--ct); }
+.top .bar { opacity: 0; }
 
 /* primera vez en la sesión (hdr-play) */
 .hdr-play .top .wm-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
-.hdr-play .top .win { animation: htelon 0.9s cubic-bezier(.55, 0, .45, 1) 0.3s both; }
+.hdr-play .top .win { animation: htelon 0.85s cubic-bezier(.5, 0, .75, .9) 0.3s both; }
 .hdr-play .top .k-arms { animation: hrueda 0.6s cubic-bezier(.2, .4, .2, 1) 0.7s both; }
 .hdr-play .top .k-join, .hdr-play .top .k-stem { animation: hfunde 0.333s linear 0.3s both; }
 @keyframes hbloque { to { transform: translateX(-4946px); } }
-@keyframes htelon { from { width: 18027.3px; } to { width: 1574.0px; } }
+@keyframes htelon { from { width: 18027.3px; } to { width: 1609.0px; } }
 @keyframes hrueda { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(-120px) rotate(-180deg); } }
 @keyframes hfunde { to { opacity: 0; } }
-/* "menú" letra por letra; una sola barra de cursor visible por vez, cada una en su lugar */
-.hdr-play .mc0 .mcur { animation: mon 0.15s 1.3s; }
-.hdr-play .ml1 { animation: mtype .01s steps(1, jump-start) 1.45s both; }
-.hdr-play .mc1 .mcur { animation: mon 0.15s 1.45s; }
-.hdr-play .ml2 { animation: mtype .01s steps(1, jump-start) 1.6s both; }
-.hdr-play .mc2 .mcur { animation: mon 0.125s 1.6s; }
-.hdr-play .ml3 { animation: mtype .01s steps(1, jump-start) 1.725s both; }
-.hdr-play .mc3 .mcur { animation: mon 0.18s 1.725s; }
-.hdr-play .ml4 { animation: mtype .01s steps(1, jump-start) 1.905s both; }
-.hdr-play .mc4 .mcur { animation: mon .01s 1.905s forwards, htitila 1.06s steps(1) 2.435s infinite; }
-@keyframes mtype { from { max-width: 0; } to { max-width: 2em; } }
-@keyframes mon { from, to { width: var(--cw); } }
-/* igual que hblink, con otro nombre: al pasar a hdr-done el titileo arranca de nuevo (encendido);
-   con el mismo nombre el navegador lo continuaría con el delay nuevo y la fase saltaría */
-@keyframes htitila { 0% { opacity: 1; } 50% { opacity: 0; } }
+/* "≡" con el parpadeo del cursor: 1.3s 1 barra · 1.83s nada · 2.36s 2 barras · 2.89s nada · 3.42s 3 barras, fijas */
+.hdr-play .top .bar1 { animation: hbar1 2.12s steps(1) 1.3s forwards; }
+.hdr-play .top .bar2 { animation: hbar2 2.12s steps(1) 1.3s forwards; }
+.hdr-play .top .bar3 { animation: hbar3 2.12s steps(1) 1.3s forwards; }
+@keyframes hbar1 { 0% { opacity: 1; } 25% { opacity: 0; } 50% { opacity: 1; } 75% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes hbar2 { 0% { opacity: 0; } 50% { opacity: 0.6; } 75% { opacity: 0; } 100% { opacity: 0.6; } }
+@keyframes hbar3 { 0% { opacity: 0; } 100% { opacity: 0.2; } }
 
-/* estado final (y el de cualquier otra página vista en la sesión) */
+/* estado final (y el de cualquier otra página vista en la sesión): ">≡" fijo, con su degradé */
 .hdr-done .top .wm-move { transform: translateX(-4946px); }
-.hdr-done .top .win { width: 1574.0px; }
+.hdr-done .top .win { width: 1609.0px; }
 .hdr-done .top .k-arms { transform: translateX(-120px) rotate(-180deg); }
 .hdr-done .top .k-join, .hdr-done .top .k-stem { opacity: 0; }
-.hdr-done .ml { max-width: 2em; }
-.hdr-done .mc4 .mcur { width: var(--cw); animation: hblink 1.06s steps(1) infinite; }
-/* menú abierto: el ">" gira 90° y apunta hacia abajo (mismo centro que antes) */
+.hdr-done .top .bar { transition: opacity .15s ease-out, transform .15s ease-out; }
+.hdr-done .top .bar1 { opacity: 1; }
+.hdr-done .top .bar2 { opacity: 0.6; }
+.hdr-done .top .bar3 { opacity: 0.2; }
+/* hover con mouse: las tres barras al 100 % */
+@media (hover: hover) and (pointer: fine) {
+  .hdr-done .top .menu-btn:hover .bar { opacity: 1; }
+}
+/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan y se
+   funden en la de abajo, que queda como un "_" titilando (530 / 530 ms) */
 .hdr-done .top .menu-btn[aria-expanded="true"] .k-arms { transform: translate(-60px, -60px) rotate(-90deg); }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar2 { transform: translateY(684.1px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar3 { transform: translateY(1368.3px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar1 { opacity: 1; animation: hblink 1.06s steps(1) infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .hdr-play .top .wm-move { animation: none; transform: translateX(-4946px); }
-  .hdr-play .top .win { animation: none; width: 1574.0px; }
+  .hdr-play .top .win { animation: none; width: 1609.0px; }
   .hdr-play .top .k-arms { animation: none; transform: translateX(-120px) rotate(-180deg); }
   .hdr-play .top .k-join, .hdr-play .top .k-stem { animation: none; opacity: 0; }
-  .hdr-play .ml { animation: none; max-width: 2em; }
-  .hdr-play .mcur { animation: none; }
-  .hdr-play .mc4 .mcur, .hdr-done .mc4 .mcur { animation: none; width: var(--cw); opacity: 1; }
+  .hdr-play .top .bar { animation: none; }
+  .hdr-play .top .bar1 { opacity: 1; }
+  .hdr-play .top .bar2 { opacity: 0.6; }
+  .hdr-play .top .bar3 { opacity: 0.2; }
+  .hdr-done .top .bar { transition: none; }
+  .hdr-done .top .menu-btn[aria-expanded="true"] .bar1 { animation: none; }
 }
 
 /* ---------- fin del header generado ---------- */
 
-/* menú abierto: el cursor queda fijo (el giro del ">" está en el bloque generado) */
-.menu-btn[aria-expanded="true"] .mc4 .mcur { animation: none; opacity: 1; }
-/* flotando, el cursor queda fijo para no distraer mientras se lee; arriba de todo vuelve a titilar
-   (solo con el header ya cerrado en ">_ menú": durante el cierre no se adelanta) */
-.hdr-done .top-float .mc4 .mcur { animation: none; opacity: 1; }
 
 .menu {
   position: absolute;

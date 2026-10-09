@@ -50,9 +50,8 @@
     root.classList.remove("intro-lock");
     root.classList.remove("intro");
     root.classList.add("hdr-play");
-    // cierre "ventana" + "menú" que se escribe letra por letra: la duración la calcula
-    // tools/header.py y la deja en --hdr-total; al terminar queda el estado final, con el
-    // cursor en la fase encendida para que no se note el cambio
+    // cierre "ventana" + el "≡" que se arma con el parpadeo del cursor: la duración la calcula
+    // tools/header.py y la deja en --hdr-total; al terminar queda el estado final (">≡" fijo)
     var total = parseFloat(getComputedStyle(root).getPropertyValue("--hdr-total")) || 2600;
     setTimeout(function () {
       root.classList.remove("hdr-play");
@@ -203,8 +202,8 @@ window.SK.cargando = (function () {
   if (!btn || !menu) return;
   var root = document.documentElement;
   function setOpen(open) {
-    // si se abre mientras el header todavía se está cerrando o escribiendo "menú", se
-    // completa de una: así el ">" gira como siempre y la etiqueta no cambia con el menú abierto
+    // si se abre mientras el header todavía se está cerrando o armando el "≡", se completa
+    // de una: así el ">" gira y las barras se funden como siempre
     if (open && root.classList.contains("hdr-play")) {
       root.classList.remove("hdr-play");
       root.classList.add("hdr-done");

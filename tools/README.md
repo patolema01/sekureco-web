@@ -14,7 +14,7 @@ pip install fonttools brotli
 ```bash
 python3 tools/brand.py    # assets/brand/*.svg y favicon.svg
 python3 tools/intro.py    # intro: escudo bajo fuego (HTML + CSS en tools/build/)
-python3 tools/header.py   # header: escudo + SEKURECO que se cierra en "> menú_" (SVG + CSS; imprime la línea de tiempo)
+python3 tools/header.py   # header: escudo + SEKURECO que se cierra en ">≡" (SVG + CSS; imprime la línea de tiempo)
 python3 tools/apply.py    # mete lo generado en index.html, 404.html y assets/styles.css
 ```
 
@@ -31,8 +31,9 @@ Con los parámetros actuales el resultado es idéntico byte a byte al que está 
 | Geometría del escudo | `brand.py` | `O`, `I`, `ARM`, `DIAG` y los cortes |
 | Peso y espaciado de la palabra | `brand.py` | `STK`, `TRACK` |
 | Cierre "ventana" del header (bloque, telón, giro del "<") | `header.py` | `S0`, `DUR`, `EASE_*`, `ROT_DESDE`, `ROT_DX`, `TELON_ANTES`, `TELON_MARGEN`, `FUNDIDO` |
-| Tipeo de "menú" y su tamaño | `header.py` | `LETRAS` (tiempos), `PESO`; tamaño, espacio y cursor salen del ">" y de las métricas de Archivo |
-| Estilos fijos de la etiqueta (color, hover, flotante) | `assets/styles.css` | bloque de la etiqueta "menú" |
+| El "≡": barras, degradé y parpadeo | `header.py` | `OPAC`, `PARPADEO`; ancho, grosor y separación salen del ">" y de las métricas de Archivo |
+| Alto del ">" (y del logo) | `header.py` | `GT_CEL`, `GT_ESC` |
+| Área táctil del botón | `assets/styles.css` | `.menu-btn::before` |
 
 `tools/fonts/michroma.woff2` (licencia OFL) se usa solo para generar los trazos del logo;
 el sitio no la carga.
