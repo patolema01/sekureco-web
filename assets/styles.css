@@ -112,7 +112,7 @@ a { color: inherit; }
   padding: 8px 14px;
   background: var(--mist);
   color: var(--navy);
-  z-index: 10;
+  z-index: 30;   /* por encima del header (20) */
   border-radius: var(--radius);
 }
 .skip:focus { top: 12px; }
@@ -792,7 +792,14 @@ html.intro-lock { overflow: hidden; }
 /* ---------- header: SEKURECO que se cierra en ">_" (botón del menú) a la izquierda,
    escudo (link al inicio) a la derecha ---------- */
 
-.top { --hs: 34px; position: relative; z-index: 20; }
+.top { --hs: 34px; position: sticky; top: 0; z-index: 20; transition: transform .25s ease; }
+/* se esconde al bajar y vuelve al subir (main.js); "flotando" = la página no está arriba de todo */
+.top-hidden { transform: translateY(-100%); }
+.top-float { box-shadow: 0 6px 18px rgba(15, 32, 50, .22); }
+/* con el header visible y flotando, los títulos sticky de sección (solo > 900 px, donde el
+   header mide 76 px) bajan para no quedar debajo */
+.sec-grid > h2 { transition: top .25s ease; }
+html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp4)); }
 .brand-row { position: relative; display: flex; align-items: center; gap: 14px; }
 .logo-shield { height: var(--hs); width: auto; display: block; }
 .menu-btn {
@@ -860,6 +867,9 @@ html.intro-lock { overflow: hidden; }
 /* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
 .hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
 .menu-btn[aria-expanded="true"] .hcur { animation: none; opacity: 1; }
+/* flotando, el cursor queda fijo para no distraer mientras se lee; arriba de todo vuelve a titilar
+   (solo con el header ya cerrado en ">_": durante el cierre de puertas no se adelanta) */
+.hdr-done .top-float .hcur { animation: none; opacity: 1; }
 
 .menu {
   position: absolute;
@@ -895,12 +905,19 @@ html.intro-lock { overflow: hidden; }
 @media (max-width: 600px) {
   .top { --hs: 28px; }
 }
+
+/* los anchors del menú quedan debajo del header (76 px; 64 px en celular) */
+main section[id] { scroll-margin-top: calc(76px + var(--sp2)); }
+@media (max-width: 600px) {
+  main section[id] { scroll-margin-top: calc(64px + var(--sp2)); }
+}
 @media (prefers-reduced-motion: reduce) {
   .hdr-play .door { animation: none; transform: scaleX(1); }
   .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
   .hdr-play .k-join { animation: none; opacity: 0; }
   .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
+  .top, .sec-grid > h2 { transition: none; }   /* el header aparece y desaparece directo */
 }
 
 /* ---------- indicador de carga reutilizable (SK.cargando) ---------- */
