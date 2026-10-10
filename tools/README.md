@@ -26,6 +26,15 @@ python3 tools/header.py   # header: escudo + SEKURECO que se cierra en ">≡" (S
 python3 tools/apply.py    # mete lo generado en index.html, 404.html y assets/styles.css
 ```
 
+Imagen para compartir (Open Graph), con Playwright del venv:
+
+```bash
+~/.venvs/sekureco-tools/bin/python tools/og.py   # assets/og/sekureco-og.png (1200 × 630); corre header.py antes
+```
+
+El PNG se commitea (el build no tiene Playwright) y `build.py` lo copia sin huella: las URLs de
+`og:image` tienen que ser estables. Si cambia el logo o la frase del hero, regenerala.
+
 Con los parámetros actuales el resultado es idéntico byte a byte al que está publicado.
 
 ## Dónde se toca cada cosa

@@ -187,6 +187,10 @@ a { color: inherit; }
   transition: border-color .2s;
 }
 .btn-ghost:hover { border-bottom-color: var(--teal-light); }
+/* el mail, como alternativa discreta debajo de los botones */
+.hero-mail { margin-top: var(--sp3); color: #C4D1D6; font-size: .9375rem; }
+.hero-mail a { color: var(--mist); text-decoration: none; border-bottom: 1px solid rgba(238, 243, 243, .35); overflow-wrap: anywhere; transition: border-color .2s; }
+.hero-mail a:hover { border-bottom-color: var(--teal-light); }
 
 /* ---------- secciones ---------- */
 
@@ -273,6 +277,11 @@ a { color: inherit; }
 .contact-par { white-space: nowrap; }   /* el mail y su "copiar" bajan juntos */
 .contact-sec a { color: var(--teal-light); text-decoration: none; border-bottom: 1px solid rgba(63, 184, 177, .4); overflow-wrap: anywhere; }
 .contact-sec a:hover { border-bottom-color: var(--teal-light); }
+/* WhatsApp primero: el botón lleva la etiqueta y el número; "copiar" al lado */
+.contact-wa { margin-top: var(--sp4); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0; }
+.btn-wa { font-size: clamp(1.0625rem, 1.9vw, 1.25rem); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn-k { font-weight: 500; opacity: .8; margin-right: .35em; }
+.contact-wa + .contact-line { margin-top: var(--sp3); }
 
 .foot {
   background: var(--foot);
@@ -287,6 +296,8 @@ a { color: inherit; }
   padding-top: 28px;
   padding-bottom: 28px;
 }
+.foot-link { color: inherit; text-underline-offset: 3px; }
+.foot-link:hover { color: var(--mist); }
 
 /* ---------- 404 ---------- */
 
@@ -299,6 +310,21 @@ a { color: inherit; }
 }
 .nf h1 { font-size: clamp(2rem, 5vw, 3.4rem); max-width: 16ch; }
 .nf p { margin: 20px 0 32px; color: #C4D1D6; }
+
+/* ---------- privacidad (y futuras páginas de texto) ---------- */
+
+.legal { padding: clamp(var(--sp5), 8vw, var(--sp6)) 0 clamp(var(--sp5), 7vw, var(--sp6)); }
+.legal h1 { font-size: clamp(1.9rem, 3.4vw, 2.78rem); }
+.legal-body { max-width: 62ch; }
+.legal-body h2 { font-size: 1.35rem; margin: var(--sp5) 0 var(--sp2); }
+.legal-body p + p, .legal-body ul + p { margin-top: var(--sp2); }
+.legal-body ul { margin: var(--sp2) 0 0; padding-left: 1.2em; }
+.legal-body li + li { margin-top: 8px; }
+.legal-body a { color: var(--accent); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.legal-body code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .9em; }
+.legal-lead { font-size: 1.125rem; }
+.legal-note { color: var(--muted); font-size: .875rem; }
+.legal-fecha { margin-top: var(--sp5); color: var(--muted); font-size: .9375rem; }
 
 /* ---------- responsive ---------- */
 
@@ -859,6 +885,7 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 }
 .mt li:last-child::before { background-size: 1px 50%, .7em 1px; }
 .mt a { padding: 0 8px; }
+.mt-num { margin-left: .5em; font-variant-numeric: tabular-nums; opacity: .75; }   /* el link es flex: el espacio del HTML no cuenta */
 /* aparece línea por línea, rápido (≈ 30 ms por línea): cada una queda transparente hasta su turno
    (con opacidad y no visibility, así se puede enfocar aunque el teclado vaya más rápido) */
 .mt:not([hidden]) > li:nth-child(2) { animation: mtLine 30ms step-end; }
