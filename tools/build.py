@@ -4,6 +4,7 @@ reescribiendo las referencias en index.html y 404.html.
 
 Así un navegador que guardó el CSS o el JS de una versión anterior nunca lo mezcla con el HTML
 nuevo: el HTML nuevo pide otro nombre. En el repo los archivos siguen con su nombre normal.
+También agrega a dist/_headers la caché de un año (immutable) para esos nombres, y solo para esos.
 
 Uso (es el comando de build de Pages; directorio de salida: dist):
     python3 tools/build.py
@@ -44,6 +45,12 @@ def main():
         nuevo = src.with_name(f"{src.stem}.{huella(src)}{src.suffix}")
         src.rename(nuevo)        # sin la copia sin huella: un HTML viejo no puede mezclarse con el CSS nuevo
         renombres["/" + rel] = "/" + nuevo.relative_to(DIST).as_posix()
+
+    # un año, immutable: solo para los nombres con huella (en _headers del repo no está, a propósito)
+    with open(DIST / "_headers", "a", encoding="utf-8") as h:
+        h.write("\n# (agregado por tools/build.py) CSS y JS con huella de contenido\n")
+        for nuevo in renombres.values():
+            h.write(f"{nuevo}\n  Cache-Control: public, max-age=31536000, immutable\n\n")
 
     for pagina in PAGINAS:
         p = DIST / pagina
