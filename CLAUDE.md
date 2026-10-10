@@ -30,7 +30,7 @@ respaldos, capacitación).
 
 | Pieza | Dónde |
 |---|---|
-| Hosting | Cloudflare Pages conectado al repo `patolema01/sekureco-web`; push a `main` publica, cada rama genera un preview |
+| Hosting | Cloudflare Pages conectado al repo `patolema01/sekureco-web`; push a `main` publica, cada rama genera un preview. Build: `python3 tools/build.py` → `dist/` (copia solo el sitio y les pone huella de contenido a styles.css, main.js y theme.js: `styles.<hash8>.css`, etc.). HTML con `no-cache` y fuentes y marca una semana (en `_headers`); CSS/JS con huella, un año `immutable` (esa regla la agrega build.py en `dist/_headers`, solo para los nombres con huella). Así un navegador nunca mezcla el HTML nuevo con un CSS o JS viejo en caché |
 | DNS y correo | Cloudflare (zona sekureco.ar). Email Routing: pato@, leandro@, gjlema@ (Gonzalo) y administracion@ (también a Gonzalo); catch-all en Drop. El sitio usa contacto@ y seguridad@ |
 | Dominio | sekureco.ar, a nombre de Gonzalo en NIC Argentina, delegado a Cloudflare |
 | Repo | `patolema01/sekureco-web` en la cuenta personal de Pato, repo público; Leandro y Gonzalo editan como colaboradores del repo (permiso de escritura, no hay organización). CODEOWNERS `* @patolema01`, ruleset sobre `main`. Más adelante se puede transferir a una organización `sekureco` |
@@ -49,7 +49,7 @@ assets/theme.js       corre antes de pintar: tema guardado, si hay intro, estado
 assets/main.js        selector de tema, intro, menú ">_", header que se esconde al bajar
 assets/fonts/         Archivo (OFL), servida desde el propio dominio
 assets/brand/         logo en SVG (vertical, horizontal, blanco, mono, escudo, icono)
-tools/                generadores de logo, intro y header
+tools/                generadores de logo, intro y header; build.py arma dist/ para Pages
 ```
 
 ## Sistema de diseño

@@ -1,7 +1,7 @@
 # sekureco-web
 
 Sitio estático de SEKURECO S.A., publicado en https://sekureco.ar con Cloudflare Pages.
-Sin framework, sin build, sin dependencias: lo que está en el repo es lo que se sirve.
+Sin framework ni dependencias. El build de Pages (`python3 tools/build.py`, salida `dist/`) solo copia el sitio y les pone huella de contenido a `styles.css`, `main.js` y `theme.js`, para que un navegador nunca mezcle un HTML nuevo con un CSS o JS viejo en caché. En el repo los archivos siguen con su nombre normal.
 
 ## Estructura
 

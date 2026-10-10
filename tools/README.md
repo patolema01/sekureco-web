@@ -9,6 +9,14 @@ Están acá para que cualquiera (o Claude) pueda cambiar una animación y regene
 pip install fonttools brotli
 ```
 
+## Build de Pages
+
+```bash
+python3 tools/build.py    # dist/: el sitio, con styles/main/theme renombrados con huella de contenido
+```
+
+Es el comando de build de Cloudflare Pages (directorio de salida: `dist`). No se commitea `dist/`.
+
 ## Regenerar
 
 ```bash
