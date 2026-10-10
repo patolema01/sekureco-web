@@ -2,10 +2,12 @@
 // 1) aplica el tema guardado (evita el parpadeo claro/oscuro);
 // 2) decide si mostrar la intro: solo la primera vez por sesión y nunca
 //    si el visitante pidió reducir el movimiento;
-// 3) si no hay intro, el header arranca ya cerrado en ">_".
+// 3) si no hay intro, el header arranca ya cerrado en ">_";
+// 4) marca "js": lo que solo funciona con JS (los botones "copiar") se muestra desde el primer cuadro.
 (function () {
   "use strict";
   var root = document.documentElement;
+  root.classList.add("js");
   try {
     var t = localStorage.getItem("tema");
     if (t === "dark" || t === "light") root.setAttribute("data-theme", t);
