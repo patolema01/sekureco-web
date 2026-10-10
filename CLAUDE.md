@@ -7,7 +7,7 @@ cualquier persona que se sume. Leelo entero antes de tocar algo.
 
 Sitio institucional de **SEKURECO S.A.**, empresa de seguridad electrónica y ciberseguridad
 de Buenos Aires: videovigilancia con análisis por IA monitoreada por un equipo chico,
-alarmas cableadas (DSC PowerSeries Neo), cámaras TP-Link VIGI, instalación con Cat6, y
+alarmas cableadas, cámaras IP con análisis, cableado estructurado y
 servicios de ciberseguridad (diagnóstico, redes segmentadas y SSID, firewall y VPN,
 respaldos, capacitación).
 
@@ -25,6 +25,7 @@ respaldos, capacitación).
 6. **No tocar DNS ni MX.** El correo @sekureco.ar funciona con Cloudflare Email Routing; un cambio de DNS lo puede cortar.
 7. **Nada sin probar.** Antes de proponer un cambio, verificarlo (abrir la página, mirar consola, probar en celular).
 8. **Lo generado no se edita a mano.** Logo, intro y logo del header salen de `tools/`. Si hay que cambiarlos, se cambia el script y se regenera (ver `tools/README.md`).
+9. **Nada de marcas ni detalles técnicos en el sitio.** El sitio no publica marcas, modelos, versiones de firmware ni especificaciones técnicas de equipos (ni DSC, ni TP-Link/VIGI, ni Cat6, ni similares), ni detalles concretos de configuración de redes de clientes. Vale para todo lo publicado: textos, `<head>`, JSON-LD, imagen OG, `alt` y `aria-label`. Motivo: no darle a un atacante pistas de qué vulnerabilidades buscar. Antes de cada PR: `grep -r -i -E 'dsc|tp-link|vigi|cat6|powerseries' dist/` tiene que dar cero.
 
 ## Infraestructura
 
@@ -104,7 +105,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 ## Contenido y datos de contacto
 
 - **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado "Hola SEKURECO, quiero hacer una consulta sobre " (codificado). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
-- **Marcas que usamos** (se mencionan en "Cómo elegimos", una por criterio y sin listas): cámaras TP-Link VIGI, alarmas DSC PowerSeries Neo, cableado Cat6. TP-Link VIGI va en "Las cámaras, en su propia red", no en un criterio sobre origen (TP-Link es de origen chino y se leería como contradicción); el criterio de equipos habla de actualizaciones y configuración cerrada. No se nombran otras marcas, ni países, ni se habla de otros fabricantes.
+- **Equipos que usamos (información interna: NO se publica, ver regla 9):** alarmas DSC PowerSeries Neo, cámaras TP-Link VIGI, cableado Cat6. El sitio habla de criterios (cable antes que inalámbrico, equipos actualizados y cerrados, cámaras en red aislada, nada sin probar), nunca de marcas, modelos ni países.
 - **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/ y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
 - **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
 

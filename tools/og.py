@@ -7,7 +7,8 @@ del propio sitio. El sitio no carga nada de esto: solo publica el PNG.
 
 Proporciones: margen de 89 px (Fibonacci) a los lados; el bloque arranca en la línea de 38,2 %
 del alto; la palabra mide la mitad del escudo, como en la intro y el header; la frase va en el
-paso de 72 px de la escala del sitio.
+paso de 72 px de la escala del sitio, una línea por oración (sin huérfanas); si la más larga no
+entra entre los márgenes, se achica lo justo.
 
 Uso (con Playwright y fonttools: ~/.venvs/sekureco-tools):
     ~/.venvs/sekureco-tools/bin/python tools/og.py
@@ -27,7 +28,7 @@ ANCHO, ALTO = 1200, 630
 NAVY, MIST, TEAL_L, BAJADA = "#0F2032", "#EEF3F3", "#3FB8B1", "#C4D1D6"
 MARGEN = 89                      # Fibonacci
 ESCUDO = 144                     # alto del escudo (Fibonacci); la palabra mide la mitad
-FRASE = "Cámaras que entienden lo que ven."
+FRASE = "Cámaras, alarmas y redes. Un solo sistema seguro."
 DOMINIO = "sekureco.ar"
 
 subprocess.run([sys.executable, str(ROOT / "tools" / "header.py")], check=True, stdout=subprocess.DEVNULL)
@@ -53,7 +54,7 @@ h1 {{ position: absolute; left: {MARGEN}px; top: {round(ALTO * 0.382) + 34}px; m
 .raya {{ position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: {TEAL_L}; }}
 </style></head><body>
 <div class="lockup">{escudo}{palabra}</div>
-<h1>{FRASE}</h1>
+<h1>{FRASE.replace(". ", ".<br>")}</h1>
 <div class="dom">{DOMINIO}</div>
 <div class="raya"></div>
 </body></html>"""
@@ -66,6 +67,13 @@ with sync_playwright() as p:
     pg = b.new_page(viewport={"width": ANCHO, "height": ALTO}, device_scale_factor=1)
     pg.goto(tmp.as_uri())
     pg.evaluate("document.fonts.ready")
+    # una línea por oración: si la más larga no entra entre los márgenes a 72 px, se achica lo justo
+    tam = pg.evaluate("""(max) => {
+        const h = document.querySelector('h1'); h.style.whiteSpace = 'nowrap';
+        const r = document.createRange(); let ancho = 0;
+        for (const n of h.childNodes) if (n.nodeType === 3) { r.selectNodeContents(n); ancho = Math.max(ancho, r.getBoundingClientRect().width); }
+        const t = Math.min(72, Math.floor(72 * max / ancho));
+        h.style.fontSize = t + 'px'; return t; }""", ANCHO - 2 * MARGEN)
     pg.screenshot(path=str(OUT), omit_background=False)
     b.close()
-print(f"{OUT.relative_to(ROOT)}: {ANCHO}×{ALTO}")
+print(f"{OUT.relative_to(ROOT)}: {ANCHO}×{ALTO}, frase a {tam} px")
