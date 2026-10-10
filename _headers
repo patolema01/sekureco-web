@@ -8,5 +8,24 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
 
-/assets/fonts/*
+# caché (Cache-Control va solo en reglas específicas: si dos reglas lo ponen, Pages junta los valores)
+# HTML: siempre se revalida, así siempre pide los CSS/JS de su versión
+/
+  Cache-Control: no-cache
+
+/*.html
+  Cache-Control: no-cache
+
+# CSS y JS con huella de contenido (tools/build.py): el nombre cambia con cada versión
+/assets/:file
   Cache-Control: public, max-age=31536000, immutable
+
+# sin huella: una semana
+/assets/fonts/*
+  Cache-Control: public, max-age=604800
+
+/assets/brand/*
+  Cache-Control: public, max-age=604800
+
+/favicon.svg
+  Cache-Control: public, max-age=604800

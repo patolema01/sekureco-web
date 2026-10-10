@@ -4,3 +4,4 @@
 node_modules/
 tools/build/
 __pycache__/
+dist/
