@@ -693,64 +693,93 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
   color: var(--mist);
   cursor: pointer;
 }
-.logo-wm { height: calc(var(--hs) / 2); width: auto; display: block; overflow: visible; }
+.logo-wm { width: auto; display: block; overflow: visible; }   /* el alto lo da el bloque generado */
 
-/* puertas del color del fondo del header: tapan las letras al cerrarse */
-.door { fill: var(--hero); transform-box: fill-box; transform: scaleX(0); }
-.door-l { transform-origin: left center; }
-.door-r { transform-origin: right center; }
-.hcur { fill: var(--teal-light); opacity: 0; }
-
-/* se cierra una vez por sesión, después de la intro */
-.hdr-play .door { animation: hdoor 1.02s cubic-bezier(.7, 0, .25, 1) .5s both; }
-.hdr-play .logo-wm .k-arms { animation: hflip .5s cubic-bezier(.6, 0, .2, 1) 1.62s both; }
-/* la unión horizontal del K se va con las puertas: el ">" queda limpio, sin "-" en la punta */
-.hdr-play .k-join { animation: hjoin .6s ease .9s both; }
-@keyframes hjoin { to { opacity: 0; } }
-.hdr-play .hcur { animation: hblink 1.06s steps(1) 2.7s infinite; }
-/* con el escudo a la derecha, el ">_" se desliza hasta el borde izquierdo
-   (1,441 × --hs es la distancia del ">" al inicio del logo) */
-.hdr-play .logo-wm { animation: hslide .5s cubic-bezier(.65, 0, .35, 1) 2.15s both; }
-@keyframes hslide { to { transform: translateX(calc(var(--hs) * -1.441)); } }
-@keyframes hdoor { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes hflip { from { transform: scaleX(1); } to { transform: scaleX(-1); } }
 @keyframes hblink { 0% { opacity: 1; } 50% { opacity: 0; } }
 
-/* estado final (y el de cualquier otra página vista en la sesión) */
-.hdr-done .door { transform: scaleX(1); }
-.hdr-done .logo-wm .k-arms { transform: scaleX(-1); }
-.hdr-done .k-join { opacity: 0; }
-.hdr-done .logo-wm { transform: translateX(calc(var(--hs) * -1.441)); }
-.hdr-done .hcur { animation: hblink 1.06s steps(1) infinite; }
-
-/* etiqueta "menú" al lado del ">_": el público no técnico no reconoce el prompt como menú.
-   Aparece cuando el ">_" ya se deslizó; sin JS no se ve (queda SEKURECO completo) */
+/* el botón del menú: ">≡" (el "≡" son tres barras del SVG). Objetivo táctil de 44 px como mínimo
+   con un área invisible que no cambia el layout */
 .menu-btn { position: relative; }
-.menu-label {
-  position: absolute;
-  top: 50%;
-  left: calc(4px + var(--hs) * .778 + 8px);   /* justo después del "_" ya desplazado */
-  transform: translateY(-50%);
-  font-size: .8125rem;
-  font-weight: 500;
-  letter-spacing: .02em;
-  color: #8FA2B0;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-}
-.hdr-play .menu-label { animation: hlabel .4s ease 2.7s both; }
-@keyframes hlabel { to { opacity: 1; } }
-.hdr-done .menu-label { opacity: 1; }
-.menu-btn:hover .menu-label, .menu-btn[aria-expanded="true"] .menu-label { color: var(--mist); }
-@media (prefers-reduced-motion: reduce) { .hdr-play .menu-label { animation: none; opacity: 1; } }
+.menu-btn::before { content: ""; position: absolute; inset: -8px 0; }
 
-/* menú abierto: el ">" gira y apunta hacia abajo, el cursor queda fijo */
-.hdr-done .menu-btn[aria-expanded="true"] .k-arms { transform: rotate(90deg) scaleX(-1); }
-.menu-btn[aria-expanded="true"] .hcur { animation: none; opacity: 1; }
-/* flotando, el cursor queda fijo para no distraer mientras se lee; arriba de todo vuelve a titilar
-   (solo con el header ya cerrado en ">_": durante el cierre de puertas no se adelanta) */
-.hdr-done .top-float .hcur { animation: none; opacity: 1; }
+/* cierre "ventana", parpadeo del "≡", menú abierto y alto del logo: los genera tools/header.py */
+/* ---------- header (generado por tools/header.py: no editar a mano) ---------- */
+/* duración de la secuencia hasta hdr-done (main.js la lee) */
+:root { --hdr-total: 3654; }
+
+/* alto del logo: el ">" (y el "≡") mide 21.62 px en escritorio y 17 px en celular */
+.top .logo-wm { height: 23.575px; }
+@media (max-width: 600px) { .top .logo-wm { height: 18.534px; } }
+
+/* el "<" rueda alrededor de un punto 60 u a la derecha de su centro (y se corre 120 u para compensar) */
+.top .k-arms { transform-origin: calc(50% + 60px) 50%; }
+.top .bar { opacity: 0; }
+
+/* primera vez en la sesión (hdr-play) */
+.hdr-play .top .wm-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
+.hdr-play .top .win { animation: htelon 0.85s cubic-bezier(.5, 0, .75, .9) 0.3s both; }
+.hdr-play .top .k-arms { animation: hrueda 0.6s cubic-bezier(.2, .4, .2, 1) 0.7s both; }
+.hdr-play .top .k-join, .hdr-play .top .k-stem, .hdr-play .top .e-stem { animation: hfunde 0.333s linear 0.3s both; }
+/* la E: las barras de arriba y del medio bajan y se funden en la de abajo; esa queda como un "_" que
+   va con el bloque el primer 35 % y después viaja (por detrás del ">") hasta ser el cursor */
+.hdr-play .top .e-bar2 { animation: hfundeE2 0.38s cubic-bezier(.4, 0, .2, 1) 0.3s both; }
+.hdr-play .top .e-bar3 { animation: hfundeE3 0.38s cubic-bezier(.4, 0, .2, 1) 0.3s both; }
+@keyframes hfundeE2 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(704.0px); } }
+@keyframes hfundeE3 { 90% { opacity: 0; } 100% { opacity: 0; transform: translateY(1376.0px); } }
+.hdr-play .top .cur-move { animation: hbloque 1s cubic-bezier(.45, 0, .25, 1) 0.3s both; }
+.hdr-play .top .e-cur { animation: hviaja 0.65s cubic-bezier(.15, .3, .25, 1) 0.65s both, hentrega .01s steps(1, jump-start) 1.3s forwards; }
+@keyframes hviaja { to { transform: translateX(4253.1px); } }
+/* al llegar, el "_" le deja el lugar a la barra de abajo del "≡" (la misma barra, en el mismo lugar): es el cursor */
+@keyframes hentrega { to { opacity: 0; } }
+@keyframes hbloque { to { transform: translateX(-4946px); } }
+@keyframes htelon { from { width: 18027.3px; } to { width: 1609.0px; } }
+@keyframes hrueda { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(-120px) rotate(-180deg); } }
+@keyframes hfunde { to { opacity: 0; } }
+/* el cursor que llegó parpadea a 92 bpm: 1.3s encendido · 1.626s apagado · 1.952s encendido · 2.278s apagado · 2.604s encendido para siempre;
+   el "≡" se completa a 216 bpm: medio desde 2.882s, arriba desde 3.16s, 0.444s cada una */
+.hdr-play .top .bar1 { animation: hbar1 1.304s steps(1) 1.3s forwards; }
+.hdr-play .top .bar2 { animation: hbar2 0.444s cubic-bezier(.25, .1, .25, 1) 2.882s both; }
+.hdr-play .top .bar3 { animation: hbar3 0.444s cubic-bezier(.25, .1, .25, 1) 3.16s both; }
+@keyframes hbar1 { 0% { opacity: 1; } 25% { opacity: 0; } 50% { opacity: 1; } 75% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes hbar2 { from { opacity: 0; } to { opacity: 0.6; } }
+@keyframes hbar3 { from { opacity: 0; } to { opacity: 0.2; } }
+
+/* estado final (y el de cualquier otra página vista en la sesión): ">≡" fijo, con su degradé */
+.hdr-done .top .wm-move { transform: translateX(-4946px); }
+.hdr-done .top .win { width: 1609.0px; }
+.hdr-done .top .k-arms { transform: translateX(-120px) rotate(-180deg); }
+.hdr-done .top .k-join, .hdr-done .top .k-stem, .hdr-done .top .e-stem, .hdr-done .top .e-bar, .hdr-done .top .e-cur { opacity: 0; }
+.hdr-done .top .bar { transition: opacity .15s ease-out, transform .15s ease-out; }
+.hdr-done .top .bar1 { opacity: 1; }
+.hdr-done .top .bar2 { opacity: 0.6; }
+.hdr-done .top .bar3 { opacity: 0.2; }
+/* hover con mouse: las tres barras al 100 % */
+@media (hover: hover) and (pointer: fine) {
+  .hdr-done .top .menu-btn:hover .bar { opacity: 1; }
+}
+/* menú abierto: el ">" apunta abajo (mismo centro que antes); las dos barras de arriba bajan (sin cambiar de largo) y se
+   funden en la de abajo, que queda como un "_" titilando (530 / 530 ms) */
+.hdr-done .top .menu-btn[aria-expanded="true"] .k-arms { transform: translate(-60px, -60px) rotate(-90deg); }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar2 { transform: translateY(704.0px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar3 { transform: translateY(1376.0px); opacity: 0; }
+.hdr-done .top .menu-btn[aria-expanded="true"] .bar1 { opacity: 1; animation: hblink 0.652s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hdr-play .top .wm-move { animation: none; transform: translateX(-4946px); }
+  .hdr-play .top .win { animation: none; width: 1609.0px; }
+  .hdr-play .top .k-arms { animation: none; transform: translateX(-120px) rotate(-180deg); }
+  .hdr-play .top .k-join, .hdr-play .top .k-stem, .hdr-play .top .e-stem, .hdr-play .top .e-bar, .hdr-play .top .e-cur { animation: none; opacity: 0; }
+  .hdr-play .top .cur-move { animation: none; }
+  .hdr-play .top .bar { animation: none; }
+  .hdr-play .top .bar1 { opacity: 1; }
+  .hdr-play .top .bar2 { opacity: 0.6; }
+  .hdr-play .top .bar3 { opacity: 0.2; }
+  .hdr-done .top .bar { transition: none; }
+  .hdr-done .top .menu-btn[aria-expanded="true"] .bar1 { animation: none; }
+}
+
+/* ---------- fin del header generado ---------- */
+
 
 .menu {
   position: absolute;
@@ -793,10 +822,6 @@ main section[id] { scroll-margin-top: calc(76px + var(--sp2)); }
   main section[id] { scroll-margin-top: calc(64px + var(--sp2)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hdr-play .door { animation: none; transform: scaleX(1); }
-  .hdr-play .logo-wm .k-arms { animation: none; transform: scaleX(-1); }
-  .hdr-play .k-join { animation: none; opacity: 0; }
-  .hdr-play .logo-wm { animation: none; transform: translateX(calc(var(--hs) * -1.441)); }
   .menu { animation: none; }
   .top, .sec-grid > h2 { transition: none; }   /* el header aparece y desaparece directo */
 }

@@ -5,8 +5,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 B = ROOT / "tools" / "build"
 intro_html = (B / "intro.html").read_text()
-_wm = (B / "header-wordmark.svg").read_text()
-intro_html = intro_html.replace("{{WORDMARK}}", _wm.replace('class="logo-wm"', 'class="intro-wm-svg"', 1))
+# la intro lleva su propio SEKURECO (header.py): solo las letras con sus acentos teal, sin la
+# ventana, el "≡" ni el cursor del header
+intro_html = intro_html.replace("{{WORDMARK}}", (B / "intro-wordmark.svg").read_text())
 intro_css = (B / "intro.css").read_text()
 shield = (B / "header-shield.svg").read_text()
 wm = (B / "header-wordmark.svg").read_text()
@@ -26,5 +27,10 @@ css = ROOT / "assets" / "styles.css"
 c = css.read_text()
 a = c.index("/* ---------- intro:")
 b = c.index("/* va al final para ganarle")
-css.write_text(c[:a] + intro_css + c[b:])
+c = c[:a] + intro_css + c[b:]
+# el cierre del header, el tipeo y la geometría de la etiqueta (tools/header.py)
+a = c.index("/* ---------- header (generado por tools/header.py")
+b = c.index("/* ---------- fin del header generado ---------- */")
+c = c[:a] + (B / "header.css").read_text() + c[b:]
+css.write_text(c)
 print("aplicado")

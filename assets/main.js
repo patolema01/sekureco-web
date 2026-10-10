@@ -40,7 +40,14 @@
   "use strict";
   var ov = document.getElementById("intro");
   var root = document.documentElement;
-  if (!ov || !root.classList.contains("intro")) return;
+  if (!root.classList.contains("intro")) return;
+  // páginas sin intro (404): theme.js no lo sabe y marca "intro" en la primera visita; sin esto el
+  // logo del header quedaba oculto. Va directo al estado final.
+  if (!ov) {
+    root.classList.remove("intro");
+    root.classList.add("hdr-done");
+    return;
+  }
   var MIN = 3000, CEASE = 2200, FLY = 950, done = false, loaded = document.readyState === "complete";
   var EASE = "cubic-bezier(.65, 0, .25, 1)";
   // bloquea el scroll mientras dura la intro; lo pone este script, así sin JS no hay bloqueo
@@ -50,10 +57,13 @@
     root.classList.remove("intro-lock");
     root.classList.remove("intro");
     root.classList.add("hdr-play");
+    // cierre "ventana" + el "≡" que se arma con el parpadeo del cursor: la duración la calcula
+    // tools/header.py y la deja en --hdr-total; al terminar queda el estado final (">≡" fijo)
+    var total = parseFloat(getComputedStyle(root).getPropertyValue("--hdr-total")) || 2600;
     setTimeout(function () {
       root.classList.remove("hdr-play");
       root.classList.add("hdr-done");
-    }, 2800);
+    }, total);
   }
 
   // traslación + escala que lleva el rectángulo "a" al "b", con origen arriba a la izquierda del elemento
@@ -197,7 +207,14 @@ window.SK.cargando = (function () {
   var btn = document.getElementById("menu-btn");
   var menu = document.getElementById("menu");
   if (!btn || !menu) return;
+  var root = document.documentElement;
   function setOpen(open) {
+    // si se abre mientras el header todavía se está cerrando o armando el "≡", se completa
+    // de una: así el ">" gira y las barras se funden como siempre
+    if (open && root.classList.contains("hdr-play")) {
+      root.classList.remove("hdr-play");
+      root.classList.add("hdr-done");
+    }
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) menu.removeAttribute("hidden"); else menu.setAttribute("hidden", "");
   }
