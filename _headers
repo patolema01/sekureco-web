@@ -16,6 +16,10 @@
 /*.html
   Cache-Control: no-cache
 
+# Pages sirve privacidad.html en /privacidad (sin .html): esa URL no entra en /*.html
+/privacidad
+  Cache-Control: no-cache
+
 # CSS y JS con huella de contenido: la regla de un año (immutable) la agrega tools/build.py en
 # dist/_headers, con el nombre exacto de cada archivo. Acá no: si el build no corriera, un
 # styles.css sin huella quedaría guardado un año.
@@ -28,4 +32,8 @@
   Cache-Control: public, max-age=604800
 
 /favicon.svg
+  Cache-Control: public, max-age=604800
+
+# imagen para compartir (Open Graph): sin huella, la URL tiene que ser estable; la genera tools/og.py
+/assets/og/*
   Cache-Control: public, max-age=604800

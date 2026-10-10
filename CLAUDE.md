@@ -43,12 +43,13 @@ SSL Full (strict) y Always Use HTTPS.
 ## Estructura
 
 ```
-index.html  404.html  favicon.svg  _headers  robots.txt  .well-known/security.txt
+index.html  404.html  privacidad.html  favicon.svg  _headers  robots.txt  sitemap.xml  .well-known/security.txt
 assets/styles.css     todo el CSS
 assets/theme.js       corre antes de pintar: tema guardado, si hay intro, estado del header
 assets/main.js        selector de tema, intro, menú ">_", header que se esconde al bajar
 assets/fonts/         Archivo (OFL), servida desde el propio dominio
 assets/brand/         logo en SVG (vertical, horizontal, blanco, mono, escudo, icono)
+assets/og/            imagen para compartir (1200 × 630, la genera tools/og.py; sin huella, URL estable)
 tools/                generadores de logo, intro y header; build.py arma dist/ para Pages
 ```
 
@@ -92,7 +93,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 - Queda ">≡": el botón del menú desplegable (Seguridad electrónica, Ciberseguridad, Cómo trabajamos, Cómo elegimos, Contacto). El "≡" son exactamente las barras de la primera E, en la misma escala, proporción y trazo (abajo 1344, medio 1261, arriba 1316 u de largo, más el trazo de 19 u en cada punta), alineadas a la izquierda como en la E y con su borde izquierdo a un espacio del ">". La de abajo es el cursor. El ícono ocupa exactamente el alto del ">", igual que la E. Degradé en el teal de acento: abajo 100 %, medio 60 %, arriba 20 % (la de 20 % se ve tenue: contraste 1,44:1 sobre el fondo del header). El ">" mide 17 px en celular (texto base) y 21,6 px en escritorio (17 × √φ, el paso siguiente de la escala); SEKURECO crece en proporción y en 320 px, sin JS, entra completa al lado del botón de tema.
 - Al llegar, el cursor (el "_" que viajó) parpadea a 92 bpm, un parpadeo por negra, corte seco: encendido 326 ms · apagado 326 · encendido 326 · apagado 326 · tercer encendido, y no se apaga más. En el tercer encendido el "≡" se completa a 216 bpm (T = 277,8 ms), de abajo hacia arriba y fundiéndose (nunca se apagan): la barra del medio de 0 a 60 % desde 1·T, la de arriba de 0 a 20 % desde 2·T, 1,6·T cada una, `cubic-bezier(.25, .1, .25, 1)`; a los 3,6 s de empezar el cierre queda fijo. El "_" que viaja va por delante de las letras blancas (nunca queda tapado) y por detrás del ">": el SVG tiene tres capas que se mueven juntas (letras con la ventana · "_" recortado solo por el borde izquierdo · ">" con la ventana).
 - Al abrir el menú, el ">" gira y apunta hacia abajo y las dos barras de arriba bajan sin cambiar de largo y se funden en la de abajo (150 ms), que queda como un "_" titilando (326 / 326). Al cerrar suben a su lugar. Al cerrar, todo vuelve en 150 ms y el "≡" queda fijo. Con mouse, el hover pone las tres barras al 100 %. El botón tiene aria-label "Menú de SEKURECO", aria-expanded y title "Menú", y un área táctil invisible de 44 px como mínimo. Se cierra con Esc, tocando afuera o eligiendo una sección. Abrirlo durante la secuencia la completa de una.
-- **Menú (índice, no copia del contenido):** con mouse se abre con el puntero 120 ms sobre el ">≡" visible y se cierra 300 ms después de salir de botón + menú; un click lo deja fijado. Al abrir se ven solo los 5 ítems, ningún árbol. Cada ítem abre su árbol estilo terminal (`raíz/` + ramas ├ └, línea por línea a ~30 ms), uno solo a la vez: con mouse y lugar, a la derecha en su propia capa (hover 150 ms o click; la lista no se mueve; cruzar otro ítem < 150 ms no cambia el árbol; fuera del ítem y su árbol 300 ms, se cierra); sin hover o sin lugar, acordeón debajo (el tap en el ítem no navega, navega la raíz). Teclado: ↑↓, → / Enter entra, ← vuelve, Esc cierra y devuelve el foco. Contacto lleva contacto@ y seguridad@ con un botón "copiar" (también en la sección), que sin JS ni portapapeles no se muestra.
+- **Menú (índice, no copia del contenido):** con mouse se abre con el puntero 120 ms sobre el ">≡" visible y se cierra 300 ms después de salir de botón + menú; un click lo deja fijado. Al abrir se ven solo los 5 ítems, ningún árbol. Cada ítem abre su árbol estilo terminal (`raíz/` + ramas ├ └, línea por línea a ~30 ms), uno solo a la vez: con mouse y lugar, a la derecha en su propia capa (hover 150 ms o click; la lista no se mueve; cruzar otro ítem < 150 ms no cambia el árbol; fuera del ítem y su árbol 300 ms, se cierra); sin hover o sin lugar, acordeón debajo (el tap en el ítem no navega, navega la raíz). Teclado: ↑↓, → / Enter entra, ← vuelve, Esc cierra y devuelve el foco. Contacto lleva whatsapp, contacto@ y seguridad@, cada uno con un botón "copiar" (también en la sección), que sin JS ni portapapeles no se muestra.
 - El cierre se ve una vez por sesión; después (y con "reducir movimiento") el header arranca ya en ">≡", fijo. Sin JS se ve SEKURECO completo.
 - Es sticky: se esconde al bajar (más de 8 px, a más de 120 px del tope) y vuelve al subir. Con mouse también vuelve dejando el puntero 120 ms en la franja de 21 px de arriba; se queda mientras el puntero esté encima y, al salir, a los 600 ms se esconde si la página sigue scrolleada. No se esconde con el menú abierto, durante la intro ni con el foco de teclado adentro. Con scroll lleva una sombra sutil; el ">≡" queda fijo. Los títulos sticky de sección bajan mientras el header está visible.
 
@@ -100,10 +101,17 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Hero:** título, bajada y botones en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
 
+## Contenido y datos de contacto
+
+- **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado "Hola SEKURECO, quiero hacer una consulta sobre " (codificado). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
+- **Marcas que usamos** (se mencionan en "Cómo elegimos", una por criterio y sin listas): cámaras TP-Link VIGI, alarmas DSC PowerSeries Neo, cableado Cat6. TP-Link VIGI va en "Las cámaras, en su propia red", no en un criterio sobre origen (TP-Link es de origen chino y se leería como contradicción); el criterio de equipos habla de actualizaciones y configuración cerrada. No se nombran otras marcas, ni países, ni se habla de otros fabricantes.
+- **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/ y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
+- **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
+
 ## Pendientes y decisiones abiertas
 
 - **Marca:** SECUREKO está registrada en INPI (clase 45) por un tercero, que también tiene sekureco.com.ar. Hay que consultar con un agente de marcas antes de invertir más en la identidad.
-- **Contenido que falta:** número de WhatsApp, sección "Para quién", "Nosotros", preguntas frecuentes, fotos reales del banco de pruebas o instalaciones.
+- **Contenido que falta:** sección "Para quién", "Nosotros", preguntas frecuentes, fotos reales del banco de pruebas o instalaciones.
 - **Material de capacitación:** el sitio promete una presentación para que el equipo cliente se quede; todavía no existe.
 - **Mejoras propuestas y no implementadas:** header compacto al scrollear, respuesta inmediata al tocar, intro corta para quien vuelve. Cuando haya más páginas: View Transitions y precarga con Speculation Rules (por header, para respetar la CSP).
 - **No hacer:** fade-in al scrollear, parallax, contadores animados sin datos reales, cursor personalizado, testimonios o logos de clientes que no existan.
