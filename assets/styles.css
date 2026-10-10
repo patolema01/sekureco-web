@@ -260,6 +260,7 @@ a { color: inherit; }
   padding: clamp(var(--sp6), 12vw, var(--sp7)) 0 clamp(var(--sp6), 14vw, 233px);
 }
 .contact h2 { font-size: clamp(2.2rem, 4.6vw, 3.54rem); max-width: 14ch; }
+.contact-lead { margin-top: var(--sp3); max-width: 52ch; color: #C4D1D6; font-size: 1.125rem; }
 .contact-line { margin-top: var(--sp4); }
 .contact-mail {
   display: inline-block;
