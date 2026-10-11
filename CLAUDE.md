@@ -115,7 +115,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
 
-**Hero:** título, bajada y botones en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
+**Hero:** cuatro bloques, en este orden visual, de DOM y de tabulación, igual en celular y escritorio: (1) selector "¿Para quién es?" chico, arriba del H1; (2) H1 + bajada; (3) contacto como un grupo: botón de WhatsApp y, pegado debajo (13 px), "o por mail a…", con 55 px antes (34 en celular); (4) link discreto "servicios ↓" al pie (89 px después; 55 en celular), con flecha SVG que baja 2 px en hover (quieta con reducir movimiento). Todo en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
 
 ## Audiencias: Empresa | Hogar
 
@@ -135,7 +135,7 @@ El selector del hero ("¿Para quién es?") cambia los textos: mismos servicios, 
 
 ## Contenido y datos de contacto
 
-- **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado "Hola SEKURECO, quiero hacer una consulta sobre " (codificado). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
+- **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado según la audiencia: "Hola SEKURECO, quiero hacer una consulta para mi empresa sobre " o "…para mi casa sobre " (codificado; dos links, uno visible). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
 - **Equipos que usamos (información interna: NO se publica, ver regla 9):** alarmas DSC PowerSeries Neo, cámaras TP-Link VIGI, cableado Cat6. El sitio habla de criterios (cable antes que inalámbrico, equipos actualizados y cerrados, cámaras en red aislada, nada sin probar), nunca de marcas, modelos ni países.
 - **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/ y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
 - **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
