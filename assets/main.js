@@ -209,7 +209,7 @@ window.SK.cargando = (function () {
 // esconder si la página sigue scrolleada. Un solo estado (hidden) y un solo lugar que lo cambia.
 // No se esconde durante la intro, con el menú abierto ni con el foco de teclado adentro.
 //
-// Menú: ">≡" abre el índice (5 ítems, ningún árbol abierto). Con mouse se abre al dejar el puntero
+// Menú: ">≡" abre el índice (4 ítems, ningún árbol abierto). Con mouse se abre al dejar el puntero
 // 120 ms y se cierra 300 ms después de salir de botón + menú; un click lo deja fijado. Cada ítem abre
 // su árbol (uno solo a la vez): con mouse y lugar, a la derecha en su propia capa (hover 150 ms o
 // click); si no, debajo, como acordeón. Se cierra todo con Esc, tocando afuera o eligiendo un destino.
@@ -311,7 +311,10 @@ window.SK.cargando = (function () {
 
   function boton(li) { return li.querySelector(".mi-btn"); }
   function rama(li) { return li.querySelector(".mt"); }
-  function enfocables(ul) { return Array.prototype.slice.call(ul.querySelectorAll("a, button")); }
+  // solo lo que se ve: el link de WhatsApp de la otra audiencia está en display:none
+  function enfocables(ul) {
+    return Array.prototype.slice.call(ul.querySelectorAll("a, button")).filter(function (el) { return el.getClientRects().length > 0; });
+  }
   function aLado() { return menu.classList.contains("menu-side"); }
 
   // a la derecha solo con mouse y si todos los árboles entran en la ventana; si no, debajo
@@ -485,6 +488,37 @@ window.SK.cargando = (function () {
     decidirLado();
     if (aLado() !== antes) setArbol(null);
   });
+})();
+
+// Selector "Empresa | Hogar" (hero). theme.js ya puso data-audiencia en <html> antes de pintar; acá
+// solo se cambia: el atributo, lo guardado (localStorage "audiencia") y ?para= en la URL, sin recargar
+// ni mover el scroll. Los textos de las dos audiencias ya están en el HTML; el CSS muestra uno.
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var botones = document.querySelectorAll(".aud-btn[data-para]");
+  function actual() { return root.getAttribute("data-audiencia") === "hogar" ? "hogar" : "empresa"; }
+  function sync() {
+    Array.prototype.forEach.call(botones, function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-para") === actual() ? "true" : "false");
+    });
+  }
+  Array.prototype.forEach.call(botones, function (b) {
+    b.addEventListener("click", function () {
+      var a = b.getAttribute("data-para");
+      if (a === actual()) return;
+      root.classList.add("aud-anim");
+      root.setAttribute("data-audiencia", a);
+      try { localStorage.setItem("audiencia", a); } catch (e) {}
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set("para", a);
+        history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+      } catch (e) {}
+      sync();
+    });
+  });
+  sync();
 })();
 
 // "copiar" al lado de cada mail (menú y Contacto): copia la dirección y muestra "copiado" 1,5 s.
