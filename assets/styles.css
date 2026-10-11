@@ -83,6 +83,7 @@ button { font: inherit; }
 
 h1, h2, h3 {
   margin: 0;
+  text-wrap: balance;   /* sin una palabra sola en la última línea */
   font-stretch: 125%;
   font-weight: 620;
   line-height: 1.1;
@@ -90,6 +91,9 @@ h1, h2, h3 {
 }
 
 p { margin: 0; }
+/* párrafos sin huérfanas donde el navegador lo soporta; si no, se ve como siempre */
+p, dd { text-wrap: pretty; }
+.services dt { text-wrap: balance; }
 
 a { color: inherit; }
 
@@ -187,6 +191,45 @@ a { color: inherit; }
   transition: border-color .2s;
 }
 .btn-ghost:hover { border-bottom-color: var(--teal-light); }
+/* selector "Empresa | Hogar": solo con JS (theme.js pone .js y data-audiencia antes de pintar,
+   así aparece desde el primer cuadro y sin parpadeo); sin JS se ve Empresa y no hay selector */
+.aud { display: none; margin-top: var(--sp4); align-items: center; flex-wrap: wrap; gap: 8px var(--sp2); }
+.js .aud { display: flex; }
+.js .aud + .actions { margin-top: var(--sp4); }
+.aud-t { color: #C4D1D6; font-size: .875rem; }
+.aud-sw { display: inline-flex; border: 1px solid #2E4562; border-radius: var(--radius); }
+.aud-btn {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  color: #C4D1D6;
+  font-size: .9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .15s, background-color .15s, box-shadow .15s;
+}
+.aud-btn + .aud-btn { border-left: 1px solid #2E4562; }
+.aud-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.aud-btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.aud-btn:hover { color: var(--mist); }
+.aud-btn:focus-visible { outline-offset: 2px; }
+/* el activo lo marca data-audiencia (no aria-pressed): así se ve bien desde el primer cuadro */
+:root:not([data-audiencia="hogar"]) .aud-btn[data-para="empresa"],
+:root[data-audiencia="hogar"] .aud-btn[data-para="hogar"] {
+  color: var(--mist);
+  background: rgba(63, 184, 177, .14);
+  box-shadow: inset 0 -2px 0 var(--teal-light);
+}
+/* textos por audiencia: el inactivo no existe para lectores de pantalla ni para "buscar en la página" */
+:root[data-audiencia="hogar"] .aud-e,
+:root:not([data-audiencia="hogar"]) .aud-h { display: none !important; }
+/* al cambiar (main.js pone .aud-anim): fundido corto de lo que aparece; nada con movimiento reducido */
+@media (prefers-reduced-motion: no-preference) {
+  .aud-anim .aud-e, .aud-anim .aud-h { animation: aud-in .14s ease-out; }
+}
+@keyframes aud-in { from { opacity: 0; } }
+
 /* el mail, como alternativa discreta debajo de los botones */
 .hero-mail { margin-top: var(--sp3); color: #C4D1D6; font-size: .9375rem; }
 .hero-mail a { color: var(--mist); text-decoration: none; border-bottom: 1px solid rgba(238, 243, 243, .35); overflow-wrap: anywhere; transition: border-color .2s; }
@@ -222,27 +265,6 @@ a { color: inherit; }
   color: var(--muted);
   max-width: 44ch;
 }
-
-.steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--sp5) var(--sp4);
-  counter-reset: none;
-}
-.step-n {
-  display: block;
-  font-stretch: 125%;
-  font-weight: 300;
-  font-size: 3.54rem;
-  line-height: 1;
-  color: var(--accent);
-  margin-bottom: var(--sp3);
-}
-.steps h3 { font-size: 1.35rem; margin-bottom: var(--sp2); }
-.steps p { color: var(--muted); font-size: 1rem; }
 
 .criteria-list { display: grid; gap: var(--sp4); }
 .criteria-list > div {
@@ -337,7 +359,6 @@ a { color: inherit; }
 }
 @media (max-width: 600px) {
   .services { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; }
   .top-in { height: 64px; }
 }
 
@@ -345,6 +366,7 @@ a { color: inherit; }
   html { scroll-behavior: auto; }
   .cursor { animation: none; }
   .k-arms { transition: none; }
+  .aud-btn { transition: none; }
 }
 
 /* ---------- grupos de servicios ---------- */
@@ -812,7 +834,7 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 /* ---------- fin del header generado ---------- */
 
 
-/* ---------- menú: índice de 5 ítems; cada uno abre su árbol (main.js) ---------- */
+/* ---------- menú: índice de 4 ítems; cada uno abre su árbol (main.js) ---------- */
 .menu {
   position: absolute;
   top: calc(100% + 14px);
