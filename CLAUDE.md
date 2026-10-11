@@ -12,7 +12,7 @@ servicios de ciberseguridad (diagnóstico, redes segmentadas y SSID, firewall y 
 respaldos, capacitación).
 
 - Responsable técnico: Pato (Patricio Lema). Aprueba todo lo que entra a `main`.
-- También editan, por Pull Request: Leandro y Gonzalo.
+- Pato es el único con acceso al repo. Leandro y Gonzalo **no** son colaboradores: es decisión de Pato, no un olvido.
 - Idioma del sitio y de la comunicación: español rioplatense, con voseo.
 
 ## Reglas duras (no negociables)
@@ -34,12 +34,27 @@ respaldos, capacitación).
 | Hosting | Cloudflare Pages conectado al repo `patolema01/sekureco-web`; push a `main` publica, cada rama genera un preview. Build: `python3 tools/build.py` → `dist/` (copia solo el sitio y les pone huella de contenido a styles.css, main.js y theme.js: `styles.<hash8>.css`, etc.). HTML con `no-cache` y fuentes y marca una semana (en `_headers`); CSS/JS con huella, un año `immutable` (esa regla la agrega build.py en `dist/_headers`, solo para los nombres con huella). Así un navegador nunca mezcla el HTML nuevo con un CSS o JS viejo en caché |
 | DNS y correo | Cloudflare (zona sekureco.ar). Email Routing: pato@, leandro@, gjlema@ (Gonzalo) y administracion@ (también a Gonzalo); catch-all en Drop. El sitio usa contacto@ y seguridad@ |
 | Dominio | sekureco.ar, a nombre de Gonzalo en NIC Argentina, delegado a Cloudflare |
-| Repo | `patolema01/sekureco-web` en la cuenta personal de Pato, repo público; Leandro y Gonzalo editan como colaboradores del repo (permiso de escritura, no hay organización). CODEOWNERS `* @patolema01`, ruleset sobre `main`. Más adelante se puede transferir a una organización `sekureco` |
+| Repo | `patolema01/sekureco-web` en la cuenta personal de Pato, repo público; único colaborador: Pato (admin). Leandro y Gonzalo no tienen acceso, por decisión de Pato (no hay organización). CODEOWNERS `* @patolema01`, ruleset sobre `main`. Más adelante se puede transferir a una organización `sekureco` |
 | Desarrollo | Claude Code en la VM `agentes` del homelab de Pato, en `~/proyectos/sekureco-web` |
 
 Configuración de Cloudflare que el sitio necesita: Email Address Obfuscation, Rocket Loader
 y la inyección automática de Web Analytics **apagados** (inyectan scripts que la CSP bloquea);
 SSL Full (strict) y Always Use HTTPS.
+
+Correo del dominio (lo carga Pato a mano; no cambiarlo sin consultarle):
+
+- **SPF:** `v=spf1 include:_spf.mx.cloudflare.net -all`. Nadie manda correo como @sekureco.ar;
+  el `include` queda porque Email Routing reenvía con SRS desde sekureco.ar y sin él el reenvío
+  fallaría SPF. El panel de Email Routing sugiere `~all`: es esperable, el `-all` es a propósito.
+- **DMARC** (`_dmarc`): `v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s; rua=mailto:pato@sekureco.ar`.
+  Un mail con remitente @sekureco.ar que no venga de nosotros se rechaza; los reportes van a Pato.
+- **DKIM:** `cf2024-1._domainkey`, de Email Routing.
+
+Headers (`_headers`): además de la CSP, `Cross-Origin-Embedder-Policy: require-corp` y Trusted
+Types (`require-trusted-types-for 'script'`). En la práctica: nada de `innerHTML`,
+`insertAdjacentHTML`, `outerHTML`, `document.write` ni `eval` en el JS (usar `textContent` y
+crear nodos), y ningún recurso de otro origen (ya prohibido por la regla 1). Pages agrega
+`Access-Control-Allow-Origin: *` a todo y `_headers` lo saca con `! Access-Control-Allow-Origin`.
 
 ## Estructura
 
