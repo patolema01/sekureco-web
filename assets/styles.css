@@ -150,7 +150,7 @@ a { color: inherit; }
 .hero {
   background: var(--hero);
   color: var(--mist);
-  padding: clamp(var(--sp5), 7vw, var(--sp6)) 0 clamp(var(--sp6), 10vw, var(--sp7));
+  padding: clamp(var(--sp5), 7vw, var(--sp6)) 0 clamp(var(--sp4), 5vw, var(--sp5));
 }
 /* el texto ocupa la columna áurea (61,8 %); la derecha queda libre para una foto real */
 .hero-copy { max-width: 61.8%; }
@@ -164,13 +164,6 @@ a { color: inherit; }
   color: #C4D1D6;
   font-size: 1.125rem;
 }
-.actions {
-  margin-top: var(--sp5);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  align-items: center;
-}
 .btn {
   display: inline-block;
   padding: 14px 26px;
@@ -182,29 +175,20 @@ a { color: inherit; }
   transition: background-color .2s;
 }
 .btn:hover { background: #008482; }
-.btn-ghost {
-  font-weight: 500;
-  text-decoration: none;
-  color: var(--mist);
-  border-bottom: 1px solid rgba(238, 243, 243, .35);
-  padding-bottom: 2px;
-  transition: border-color .2s;
-}
-.btn-ghost:hover { border-bottom-color: var(--teal-light); }
 /* selector "Empresa | Hogar": solo con JS (theme.js pone .js y data-audiencia antes de pintar,
    así aparece desde el primer cuadro y sin parpadeo); sin JS se ve Empresa y no hay selector */
-.aud { display: none; margin-top: var(--sp4); align-items: center; flex-wrap: wrap; gap: 8px var(--sp2); }
+/* va arriba del H1: control secundario, chico */
+.aud { display: none; margin-bottom: var(--sp3); align-items: center; flex-wrap: wrap; gap: 8px var(--sp2); }
 .js .aud { display: flex; }
-.js .aud + .actions { margin-top: var(--sp4); }
-.aud-t { color: #C4D1D6; font-size: .875rem; }
+.aud-t { color: #C4D1D6; font-size: .8125rem; }
 .aud-sw { display: inline-flex; border: 1px solid #2E4562; border-radius: var(--radius); }
 .aud-btn {
-  min-height: 40px;
-  padding: 0 18px;
+  min-height: 32px;
+  padding: 0 13px;
   border: 0;
   background: transparent;
   color: #C4D1D6;
-  font-size: .9375rem;
+  font-size: .8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: color .15s, background-color .15s, box-shadow .15s;
@@ -230,10 +214,25 @@ a { color: inherit; }
 }
 @keyframes aud-in { from { opacity: 0; } }
 
-/* el mail, como alternativa discreta debajo de los botones */
-.hero-mail { margin-top: var(--sp3); color: #C4D1D6; font-size: .9375rem; }
+/* contacto: un solo grupo (WhatsApp y, pegado debajo, el mail), separado del mensaje y de lo que sigue */
+.hero-cta { margin-top: var(--sp5); }
+.hero-mail { margin-top: var(--sp2); color: #C4D1D6; font-size: .9375rem; }
 .hero-mail a { color: var(--mist); text-decoration: none; border-bottom: 1px solid rgba(238, 243, 243, .35); overflow-wrap: anywhere; transition: border-color .2s; }
 .hero-mail a:hover { border-bottom-color: var(--teal-light); }
+/* navegación al pie del hero: link discreto "servicios ↓" */
+.hero-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--sp6);
+  color: #C4D1D6;
+  font-size: .9375rem;
+  text-decoration: none;
+  transition: color .2s;
+}
+.hero-next:hover { color: var(--mist); }
+.hero-next-i { width: 10px; height: 14px; transition: transform .2s; }
+.hero-next:hover .hero-next-i { transform: translateY(2px); }
 
 /* ---------- secciones ---------- */
 
@@ -359,6 +358,8 @@ a { color: inherit; }
 }
 @media (max-width: 600px) {
   .services { grid-template-columns: 1fr; }
+  .hero-cta { margin-top: var(--sp4); }
+  .hero-next { margin-top: var(--sp5); }
   .top-in { height: 64px; }
 }
 
@@ -367,6 +368,8 @@ a { color: inherit; }
   .cursor { animation: none; }
   .k-arms { transition: none; }
   .aud-btn { transition: none; }
+  .hero-next-i { transition: none; }
+  .hero-next:hover .hero-next-i { transform: none; }
 }
 
 /* ---------- grupos de servicios ---------- */
