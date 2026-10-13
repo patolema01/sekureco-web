@@ -17,15 +17,20 @@ respaldos, capacitación).
 
 ## Reglas duras (no negociables)
 
-1. **Sin recursos externos.** Nada de Google Fonts, CDNs, analytics, embeds ni scripts de terceros. Todo se sirve desde sekureco.ar.
-2. **Sin JS ni CSS inline.** Nada de `<script>…</script>`, `style="…"` ni `onclick=`. La CSP de `_headers` los bloquea y el sitio se rompe.
-3. **Sin secretos en el repo.** Es público. Los tokens de Cloudflare viven solo en `~/.config/sekureco/` en `agentes`.
-4. **`main` protegida.** Todo entra por Pull Request con aprobación de Pato.
-5. **Movimiento con respeto.** Toda animación tiene que respetar `prefers-reduced-motion`.
-6. **No tocar DNS ni MX.** El correo @sekureco.ar funciona con Cloudflare Email Routing; un cambio de DNS lo puede cortar.
-7. **Nada sin probar.** Antes de proponer un cambio, verificarlo (abrir la página, mirar consola, probar en celular).
-8. **Lo generado no se edita a mano.** Logo, intro y logo del header salen de `tools/`. Si hay que cambiarlos, se cambia el script y se regenera (ver `tools/README.md`).
-9. **Nada de marcas ni detalles técnicos en el sitio.** El sitio no publica marcas, modelos, versiones de firmware ni especificaciones técnicas de equipos (ni DSC, ni TP-Link/VIGI, ni Cat6, ni similares), ni detalles concretos de configuración de redes de clientes. Vale para todo lo publicado: textos, `<head>`, JSON-LD, imagen OG, `alt` y `aria-label`. Motivo: no darle a un atacante pistas de qué vulnerabilidades buscar. Antes de cada PR: `grep -r -i -E 'dsc|tp-link|vigi|cat6|powerseries' dist/` tiene que dar cero.
+1. **Sin recursos externos.** Nada de fuentes externas (Google Fonts), CDNs, analytics, embeds ni scripts de terceros. Todo se sirve desde sekureco.ar.
+2. **Sin JS ni CSS inline, sin HTML desde strings.** Nada de `<script>…</script>`, `style="…"` ni `onclick=`; en el JS, nada de `innerHTML`, `insertAdjacentHTML` ni `eval`. La CSP y Trusted Types de `_headers` los bloquean y el sitio se rompe.
+3. **Sin secretos en el repo.** Es público. Los tokens (Cloudflare y otros) viven solo en `~/.config/sekureco/` en `agentes`; nunca se imprimen, se loguean ni se commitean.
+4. **`main` protegida.** Todo cambio va por rama + Pull Request con aprobación de Pato; nunca push directo a `main`.
+5. **HSTS intocable.** Nunca cambiar ni quitar el header `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` de `_headers`. sekureco.ar está en la lista de HSTS preload: si el header desaparece, el dominio sale de la lista. Ningún subdominio de sekureco.ar puede servirse por HTTP; para equipos de red local usar IPs o nombres de Tailscale, nunca subdominios de sekureco.ar.
+6. **No tocar DNS ni MX.** El correo @sekureco.ar funciona con Cloudflare Email Routing; un cambio de DNS lo puede cortar. Los registros los carga Pato a mano.
+7. **OPSEC: nada de marcas ni detalles técnicos.** El sitio y el repo nunca publican marcas, modelos, versiones de firmware ni especificaciones técnicas de equipos, ni detalles concretos de configuración de redes de clientes. Vale para todo: textos, `<head>`, JSON-LD, imagen OG, `alt`, `aria-label`, comentarios, `tools/` y este archivo. Se habla en genérico ("cámaras IP", "alarmas cableadas", "cableado estructurado"). Motivo: no darle a un atacante pistas de qué vulnerabilidades buscar. Antes de cada PR, `grep -r -I -i -E -f ~/proyectos/sekureco-ops/opsec-patrones.txt dist/` y `git grep -I -i -E -f ~/proyectos/sekureco-ops/opsec-patrones.txt` tienen que dar cero (la lista de patrones vive fuera del repo, justamente porque nombra las marcas).
+8. **No inventar datos.** Nada de clientes, testimonios, cifras, horarios, tiempos de respuesta ni precios que no existan.
+9. **Zona de servicio: solo CABA.** Nada de GBA, conurbano ni provincia.
+10. **Movimiento con respeto.** Toda animación tiene que respetar `prefers-reduced-motion`.
+11. **Lo generado no se edita a mano.** Logo, intro y logo del header salen de `tools/`. Si hay que cambiarlos, se cambia el script y se regenera (ver `tools/README.md`).
+12. **Nada sin probar.** Antes de proponer un cambio, verificarlo (abrir la página, mirar consola, probar en celular).
+13. **Scripts de operación fuera del repo.** Pruebas, capturas, llamadas a APIs y textos de PR van en `~/proyectos/sekureco-ops/`, nunca acá.
+14. **Servidores de prueba en otra shell.** Se levantan aparte y se matan al terminar.
 
 ## Infraestructura
 
@@ -33,7 +38,8 @@ respaldos, capacitación).
 |---|---|
 | Hosting | Cloudflare Pages conectado al repo `patolema01/sekureco-web`; push a `main` publica, cada rama genera un preview. Build: `python3 tools/build.py` → `dist/` (copia solo el sitio y les pone huella de contenido a styles.css, main.js y theme.js: `styles.<hash8>.css`, etc.). HTML con `no-cache` y fuentes y marca una semana (en `_headers`); CSS/JS con huella, un año `immutable` (esa regla la agrega build.py en `dist/_headers`, solo para los nombres con huella). Así un navegador nunca mezcla el HTML nuevo con un CSS o JS viejo en caché |
 | DNS y correo | Cloudflare (zona sekureco.ar). Email Routing: pato@, leandro@, gjlema@ (Gonzalo) y administracion@ (también a Gonzalo); catch-all en Drop. El sitio usa contacto@ y seguridad@ |
-| Dominio | sekureco.ar, a nombre de Gonzalo en NIC Argentina, delegado a Cloudflare |
+| Dominio | sekureco.ar, a nombre de SEKURECO S.A. en NIC Argentina, delegado a Cloudflare. DNSSEC pendiente: NIC Argentina no acepta registros DS |
+| Seguridad del dominio | HSTS preload inscripto en hstspreload.org (pendiente de inclusión; ver regla 5). Activos en Cloudflare: registros CAA, CT Monitoring y redirect `www` → apex |
 | Repo | `patolema01/sekureco-web` en la cuenta personal de Pato, repo público; único colaborador: Pato (admin). Leandro y Gonzalo no tienen acceso, por decisión de Pato (no hay organización). CODEOWNERS `* @patolema01`, ruleset sobre `main`. Más adelante se puede transferir a una organización `sekureco` |
 | Desarrollo | Claude Code en la VM `agentes` del homelab de Pato, en `~/proyectos/sekureco-web` |
 
@@ -50,10 +56,11 @@ Correo del dominio (lo carga Pato a mano; no cambiarlo sin consultarle):
   Un mail con remitente @sekureco.ar que no venga de nosotros se rechaza; los reportes van a Pato.
 - **DKIM:** `cf2024-1._domainkey`, de Email Routing.
 
-Headers (`_headers`): además de la CSP, `Cross-Origin-Embedder-Policy: require-corp` y Trusted
+Headers (`_headers`): `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+(no se toca, regla 5); además de la CSP, `Cross-Origin-Embedder-Policy: require-corp` y Trusted
 Types (`require-trusted-types-for 'script'`). En la práctica: nada de `innerHTML`,
 `insertAdjacentHTML`, `outerHTML`, `document.write` ni `eval` en el JS (usar `textContent` y
-crear nodos), y ningún recurso de otro origen (ya prohibido por la regla 1). Pages agrega
+crear nodos), y ningún recurso de otro origen (ya prohibido por las reglas 1 y 2). Pages agrega
 `Access-Control-Allow-Origin: *` a todo y `_headers` lo saca con `! Access-Control-Allow-Origin`.
 
 ## Estructura
@@ -136,7 +143,7 @@ El selector del hero ("¿Para quién es?") cambia los textos: mismos servicios, 
 ## Contenido y datos de contacto
 
 - **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado según la audiencia: "Hola SEKURECO, quiero hacer una consulta para mi empresa sobre " o "…para mi casa sobre " (codificado; dos links, uno visible). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
-- **Equipos que usamos (información interna: NO se publica, ver regla 9):** alarmas DSC PowerSeries Neo, cámaras TP-Link VIGI, cableado Cat6. El sitio habla de criterios (cable antes que inalámbrico, equipos actualizados y cerrados, cámaras en red aislada, nada sin probar), nunca de marcas, modelos ni países.
+- **Equipos que usamos:** alarmas cableadas, cámaras IP con análisis y cableado estructurado. Marcas y modelos concretos no se escriben en el repo (regla 7). El sitio habla de criterios (cable antes que inalámbrico, equipos actualizados y cerrados, cámaras en red aislada, nada sin probar), nunca de marcas, modelos ni países.
 - **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/ y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
 - **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
 
