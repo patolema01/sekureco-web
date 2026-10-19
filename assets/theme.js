@@ -1,7 +1,8 @@
 // Corre antes de pintar la página:
 // 1) aplica el tema guardado (evita el parpadeo claro/oscuro);
-// 2) decide si mostrar la intro: solo la primera vez por sesión y nunca
-//    si el visitante pidió reducir el movimiento;
+// 2) decide si mostrar la intro: solo en el inicio, la primera vez por sesión y nunca
+//    si el visitante pidió reducir el movimiento (en /servicios/…, /privacidad y 404 no hay intro:
+//    ahí el header arranca cerrado desde el primer cuadro, sin esperar a main.js);
 // 3) si no hay intro, el header arranca ya cerrado en ">_";
 // 4) marca "js": lo que solo funciona con JS (los botones "copiar") se muestra desde el primer cuadro.
 // 5) audiencia (Empresa | Hogar) en data-audiencia: ?para= en la URL manda sobre lo guardado;
@@ -28,7 +29,8 @@
   root.setAttribute("data-audiencia", aud || "empresa");
   try {
     var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduce && !sessionStorage.getItem("intro")) {
+    var inicio = location.pathname === "/" || location.pathname === "/index.html";
+    if (inicio && !reduce && !sessionStorage.getItem("intro")) {
       root.classList.add("intro");          // el header se cierra cuando termina la intro
       sessionStorage.setItem("intro", "1");
     } else {
