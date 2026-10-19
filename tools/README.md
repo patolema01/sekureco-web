@@ -23,7 +23,7 @@ Es el comando de build de Cloudflare Pages (directorio de salida: `dist`). No se
 python3 tools/brand.py    # assets/brand/*.svg y favicon.svg
 python3 tools/intro.py    # intro: escudo bajo fuego (HTML + CSS en tools/build/)
 python3 tools/header.py   # header: escudo + SEKURECO que se cierra en ">≡" (SVG + CSS; imprime la línea de tiempo)
-python3 tools/apply.py    # mete lo generado en index.html, 404.html y assets/styles.css
+python3 tools/apply.py    # mete lo generado en index.html, 404.html, privacidad.html, servicios/*/index.html y assets/styles.css
 ```
 
 Imagen para compartir (Open Graph), con Playwright del venv:
