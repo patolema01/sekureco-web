@@ -1,6 +1,6 @@
 """Build de Cloudflare Pages: copia el sitio a dist/ y le pone una huella de contenido a los
 archivos que cambian con cada versión (styles.css, main.js, theme.js → styles.<hash8>.css, …),
-reescribiendo las referencias en index.html, 404.html y privacidad.html.
+reescribiendo las referencias en index.html, 404.html, privacidad.html y servicios/*/index.html.
 
 Así un navegador que guardó el CSS o el JS de una versión anterior nunca lo mezcla con el HTML
 nuevo: el HTML nuevo pide otro nombre. En el repo los archivos siguen con su nombre normal.
@@ -19,10 +19,12 @@ DIST = ROOT / "dist"
 
 # lo que se publica (nada más: ni tools/, ni CLAUDE.md, ni README.md)
 SITIO = ["index.html", "404.html", "privacidad.html", "_headers", "favicon.svg", "robots.txt", "sitemap.xml",
-         ".well-known", "assets"]
+         ".well-known", "assets", "servicios"]
 # los que llevan huella de contenido (assets/og/sekureco-og.png no: las URLs de Open Graph tienen que ser estables)
 CON_HUELLA = ["assets/styles.css", "assets/main.js", "assets/theme.js"]
-PAGINAS = ["index.html", "404.html", "privacidad.html"]
+# todas las páginas: las tres de la raíz y una por servicio (servicios/<slug>/index.html)
+PAGINAS = ["index.html", "404.html", "privacidad.html"] + sorted(
+    p.relative_to(ROOT).as_posix() for p in (ROOT / "servicios").glob("*/index.html"))
 
 
 def huella(path):
