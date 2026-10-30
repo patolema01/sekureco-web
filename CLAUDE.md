@@ -131,7 +131,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
 
-**Hero:** cuatro bloques, en este orden visual, de DOM y de tabulación, igual en celular y escritorio: (1) selector "¿Para quién es?" chico, arriba del H1; (2) antetítulo, H1, bajada y la línea ANALIZAR / DISEÑAR / EJECUTAR / CONTROLAR / MEJORAR; (3) contacto como un grupo: botón de WhatsApp y, pegado debajo (13 px), "o por mail a…", con 55 px antes (34 en celular); (4) link discreto "servicios ↓" al pie (89 px después; 55 en celular), con flecha SVG que baja 2 px en hover (quieta con reducir movimiento). Todo en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
+**Hero:** cuatro bloques, en este orden visual, de DOM y de tabulación, igual en celular y escritorio: (1) selector "¿Para quién es?" chico, arriba del H1 (hoy oculto, ver Audiencias); (2) antetítulo, H1 "La seguridad no se improvisa.", segunda línea destacada "Se diseña, se ejecuta y se controla." (clase `svc-t`), bajada y la línea ANALIZAR / DISEÑAR / EJECUTAR / CONTROLAR / MEJORAR; (3) contacto como un grupo: botón de WhatsApp y, pegado debajo (13 px), "o por mail a…", con 55 px antes (34 en celular); (4) link discreto "servicios ↓" al pie (89 px después; 55 en celular), con flecha SVG que baja 2 px en hover (quieta con reducir movimiento). Todo en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
 
 ## Audiencias: Empresa | Hogar
 
@@ -148,14 +148,16 @@ El selector del hero ("¿Para quién es?") cambia los textos: mismos servicios, 
   reducir movimiento.
 - Sin JS: se ve Empresa y el selector no aparece. `<head>`, OG y JSON-LD van siempre con Empresa.
 - Texto nuevo: siempre en las dos versiones, o igual para las dos.
-- Con el contenido institucional (regla 15) no hay textos distintos por audiencia: el selector sigue
-  funcionando (atributo, `?para=`, localStorage) pero hoy no cambia nada visible. Pendiente de decisión.
+- Con el contenido institucional (regla 15) no hay textos distintos por audiencia: el selector está
+  **oculto** con el atributo `hidden` en `index.html` (el CSS lo respeta: `.js .aud:not([hidden])`).
+  El código sigue: `theme.js` pone `data-audiencia` y `main.js` maneja los botones. Para volver a
+  mostrarlo, sacar `hidden`.
 
 ## Contenido y datos de contacto
 
 - **WhatsApp:** +54 11 6546-1966, link `https://wa.me/5491165461966` (sin texto prellenado). Se muestra "+54 11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
 - **Equipos que usamos:** alarmas cableadas, cámaras IP con análisis y cableado estructurado. Marcas y modelos concretos no se escriben en el repo (regla 7). El sitio habla en genérico, nunca de marcas, modelos ni países.
-- **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/, las 9 de servicio y /privacidad) y la línea Sitemap en `robots.txt`. Sin JSON-LD ni ningún otro `<script>` inline (se sacó el de Organization con el contenido institucional).
+- **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/, las 9 de servicio y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
 - **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
 - **Páginas de servicio (`/servicios/<slug>/`):** una por tarjeta del inicio (la tarjeta entera es un solo `<a>` con "Ver detalle"; su bajada es una oración del primer párrafo de la página). Estructura fija: título, bajada (si el contenido la trae), cuerpo con sus listas, "Nuestro método" (los 5 pasos), contacto (WhatsApp + contacto@), los otros 8 servicios y "Volver al inicio". Todo el texto sale del archivo de contenido (regla 15); sin marcas, modelos ni detalles técnicos (regla 7). `tools/build.py` y `tools/apply.py` las incluyen.
 
@@ -164,7 +166,7 @@ El selector del hero ("¿Para quién es?") cambia los textos: mismos servicios, 
 - **Marca:** SECUREKO está registrada en INPI (clase 45) por un tercero, que también tiene sekureco.com.ar. Hay que consultar con un agente de marcas antes de invertir más en la identidad.
 - **Contenido que falta:** fotos reales del banco de pruebas o instalaciones. Cualquier texto nuevo, con aprobación de Gonzalo (regla 15).
 - **Páginas de servicio:** `_headers` no tiene regla para `/servicios/*`: falta `Cache-Control: no-cache` como la de `/privacidad`, para que el HTML siempre pida el CSS/JS de su versión.
-- **Selector Empresa | Hogar:** con el contenido institucional no tiene textos que alternar; decidir si se escriben versiones por audiencia (con aprobación de Gonzalo) o si se saca.
+- **Selector Empresa | Hogar:** oculto (atributo `hidden` en `index.html`). Vuelve cuando haya textos por audiencia aprobados por Gonzalo (regla 15).
 - **Demo en vivo con la cámara del visitante:** desde el menú, con aviso previo y consentimiento explícito. Requiere actualizar `/privacidad` y relajar `camera=()` de la Permissions-Policy en `_headers` solo para esa página.
 - **Mejoras propuestas y no implementadas:** header compacto al scrollear, respuesta inmediata al tocar, intro corta para quien vuelve. Ahora que hay más páginas: View Transitions y precarga con Speculation Rules (por header, para respetar la CSP).
 - **No hacer:** fade-in al scrollear, parallax, contadores animados sin datos reales, cursor personalizado, testimonios o logos de clientes que no existan.
