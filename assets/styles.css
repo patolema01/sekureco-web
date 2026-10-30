@@ -426,6 +426,7 @@ a { color: inherit; }
 .svc-page .section h2 { font-size: clamp(1.72rem, 2.6vw, 2.18rem); }
 .svc-page .sec-body > p { max-width: 60ch; }
 .svc-page .sec-body > p + p, .svc-page .sec-body > p + ul, .svc-page .sec-body > p + ol { margin-top: var(--sp3); }
+.svc-page .sec-body > ul + p { margin-top: var(--sp3); }   /* un párrafo después de una lista (contenido institucional) */
 /* separadores finos que funcionan en claro y oscuro */
 .svc-page { --rule: rgba(86, 103, 122, .35); }
 
@@ -1058,6 +1059,9 @@ html:has(.top-float:not(.top-hidden)) .sec-grid > h2 { top: calc(76px + var(--sp
 .mt:not([hidden]) > li:nth-child(5) { animation: mtLine 120ms step-end; }
 .mt:not([hidden]) > li:nth-child(6) { animation: mtLine 150ms step-end; }
 .mt:not([hidden]) > li:nth-child(7) { animation: mtLine 180ms step-end; }
+.mt:not([hidden]) > li:nth-child(8) { animation: mtLine 210ms step-end; }
+.mt:not([hidden]) > li:nth-child(9) { animation: mtLine 240ms step-end; }
+.mt:not([hidden]) > li:nth-child(10) { animation: mtLine 270ms step-end; }
 @keyframes mtLine { from, to { opacity: 0; } }
 
 /* con mouse y lugar: el árbol se abre a la derecha del ítem, en su propia capa (la lista no se mueve) */
