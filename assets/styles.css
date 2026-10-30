@@ -179,7 +179,7 @@ a { color: inherit; }
    así aparece desde el primer cuadro y sin parpadeo); sin JS se ve Empresa y no hay selector */
 /* va arriba del H1: control secundario, chico */
 .aud { display: none; margin-bottom: var(--sp3); align-items: center; flex-wrap: wrap; gap: 8px var(--sp2); }
-.js .aud { display: flex; }
+.js .aud:not([hidden]) { display: flex; }
 .aud-t { color: #C4D1D6; font-size: .8125rem; }
 .aud-sw { display: inline-flex; border: 1px solid #2E4562; border-radius: var(--radius); }
 .aud-btn {
