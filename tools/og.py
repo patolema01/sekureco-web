@@ -28,7 +28,7 @@ ANCHO, ALTO = 1200, 630
 NAVY, MIST, TEAL_L, BAJADA = "#0F2032", "#EEF3F3", "#3FB8B1", "#C4D1D6"
 MARGEN = 89                      # Fibonacci
 ESCUDO = 144                     # alto del escudo (Fibonacci); la palabra mide la mitad
-FRASE = "Cámaras, alarmas y redes. Un solo sistema seguro."
+FRASE = "La seguridad no se improvisa. Se diseña, se ejecuta y se controla."
 DOMINIO = "sekureco.ar"
 
 subprocess.run([sys.executable, str(ROOT / "tools" / "header.py")], check=True, stdout=subprocess.DEVNULL)

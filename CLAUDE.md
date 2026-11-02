@@ -5,11 +5,13 @@ cualquier persona que se sume. Leelo entero antes de tocar algo.
 
 ## Qué es
 
-Sitio institucional de **SEKURECO S.A.**, empresa de seguridad electrónica y ciberseguridad
-de Buenos Aires: videovigilancia con análisis por IA monitoreada por un equipo chico,
-alarmas cableadas, cámaras IP con análisis, cableado estructurado y
-servicios de ciberseguridad (diagnóstico, redes segmentadas y SSID, firewall y VPN,
-respaldos, capacitación).
+Sitio institucional de **SEKURECO S.A.**, empresa de Buenos Aires de seguridad física, electrónica y
+digital integrada, basada en procesos: analizar, diseñar, ejecutar, controlar y mejorar. Integra
+vigilancia presencial, videovigilancia inteligente, alarmas, controles de acceso, protección de redes
+y seguridad informática, para empresas, comercios y hogares. Servicios: planificación y prevención en
+eventos, seguridad en obras e industrias, ingreso y control de mercadería, seguridad corporativa,
+seguridad hotelera, seguridad física, custodias eventuales por hora, monitoreo in company y
+capacitación y mejora continua.
 
 - Responsable técnico: Pato (Patricio Lema). Aprueba todo lo que entra a `main`.
 - Pato es el único con acceso al repo. Leandro y Gonzalo **no** son colaboradores: es decisión de Pato, no un olvido.
@@ -31,6 +33,8 @@ respaldos, capacitación).
 12. **Nada sin probar.** Antes de proponer un cambio, verificarlo (abrir la página, mirar consola, probar en celular).
 13. **Scripts de operación fuera del repo.** Pruebas, capturas, llamadas a APIs y textos de PR van en `~/proyectos/sekureco-ops/`, nunca acá.
 14. **Servidores de prueba en otra shell.** Se levantan aparte y se matan al terminar.
+15. **El contenido institucional sale de `sekureco-ops/contenido/contenido-pdf-sekureco.md`, aprobado por Gonzalo.** No se agrega contenido que no esté ahí sin su aprobación.
+16. **Nunca usar sekureco.com.ar ni sus direcciones:** el dominio es de un tercero.
 
 ## Infraestructura
 
@@ -67,8 +71,9 @@ crear nodos), y ningún recurso de otro origen (ya prohibido por las reglas 1 y 
 
 ```
 index.html  404.html  privacidad.html  favicon.svg  _headers  robots.txt  sitemap.xml  .well-known/security.txt
-servicios/<slug>/index.html   una página de detalle por servicio (9): videovigilancia, alarmas, monitoreo,
-                      instalacion, diagnostico, redes, acceso-remoto, respaldos, capacitacion. HTML a mano,
+servicios/<slug>/index.html   una página de detalle por servicio (9): eventos, obras-e-industrias,
+                      control-de-mercaderia, seguridad-corporativa, seguridad-hotelera, seguridad-fisica,
+                      custodias, monitoreo-in-company, capacitacion. HTML a mano,
                       mismo header y footer que privacidad.html (menú con anclas /#…); en sitemap.xml
 assets/styles.css     todo el CSS
 assets/theme.js       corre antes de pintar: tema guardado, si hay intro, estado del header
@@ -117,7 +122,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Header:**
 - A la izquierda SEKURECO; a la derecha el botón de tema y el escudo (link al inicio). Al terminar la intro, el cierre "ventana" (≈1 s, un solo movimiento): toda la palabra se desplaza a la izquierda como un bloque y se ve a través de una ventana (clipPath). Su borde izquierdo está fijo en el borde izquierdo del ">" final (S, E y el palo del K salen por ahí) y el derecho es un telón que avanza tapando U, R, E, C, O y frena con un corte seco 150 ms antes que el bloque (a la vista, quieto ~115 ms antes de que se asiente el ">"). El "<" viaja con el bloque y rueda 180° antihorario en el último 60 % del viaje hasta ser ">" (sin "-" en la punta). En el primer tercio se desvanecen la unión y el palo del K, y el palo de la E; las barras de arriba y del medio de la E bajan y se funden en la de abajo (380 ms) y queda un "_" teal. Ese "_" va con el bloque el primer 35 % del movimiento y después viaja por la línea de base, por delante de las letras y por detrás del ">", sin cambiar de tamaño: llega a su lugar (a un espacio del ">") en el mismo instante en que se asienta el ">", y ahí es el cursor (la barra de abajo del "≡"). El palo del K se desvanece porque el "<" al rodar barre un círculo de 2209 u y entre el palo y la U hay 1930 u, así que con el palo visible se superponían. Todo lo genera `tools/header.py` (SVG + bloque de CSS).
-- Queda ">≡": el botón del menú desplegable (Seguridad electrónica / Tu casa, Ciberseguridad / Tu familia en internet, Cómo elegimos, Contacto; los nombres siguen a la audiencia). El "≡" son exactamente las barras de la primera E, en la misma escala, proporción y trazo (abajo 1344, medio 1261, arriba 1316 u de largo, más el trazo de 19 u en cada punta), alineadas a la izquierda como en la E y con su borde izquierdo a un espacio del ">". La de abajo es el cursor. El ícono ocupa exactamente el alto del ">", igual que la E. Degradé en el teal de acento: abajo 100 %, medio 60 %, arriba 20 % (la de 20 % se ve tenue: contraste 1,44:1 sobre el fondo del header). El ">" mide 17 px en celular (texto base) y 21,6 px en escritorio (17 × √φ, el paso siguiente de la escala); SEKURECO crece en proporción y en 320 px, sin JS, entra completa al lado del botón de tema.
+- Queda ">≡": el botón del menú desplegable (Servicios, Método, Nosotros, Contacto). El "≡" son exactamente las barras de la primera E, en la misma escala, proporción y trazo (abajo 1344, medio 1261, arriba 1316 u de largo, más el trazo de 19 u en cada punta), alineadas a la izquierda como en la E y con su borde izquierdo a un espacio del ">". La de abajo es el cursor. El ícono ocupa exactamente el alto del ">", igual que la E. Degradé en el teal de acento: abajo 100 %, medio 60 %, arriba 20 % (la de 20 % se ve tenue: contraste 1,44:1 sobre el fondo del header). El ">" mide 17 px en celular (texto base) y 21,6 px en escritorio (17 × √φ, el paso siguiente de la escala); SEKURECO crece en proporción y en 320 px, sin JS, entra completa al lado del botón de tema.
 - Al llegar, el cursor (el "_" que viajó) parpadea a 92 bpm, un parpadeo por negra, corte seco: encendido 326 ms · apagado 326 · encendido 326 · apagado 326 · tercer encendido, y no se apaga más. En el tercer encendido el "≡" se completa a 216 bpm (T = 277,8 ms), de abajo hacia arriba y fundiéndose (nunca se apagan): la barra del medio de 0 a 60 % desde 1·T, la de arriba de 0 a 20 % desde 2·T, 1,6·T cada una, `cubic-bezier(.25, .1, .25, 1)`; a los 3,6 s de empezar el cierre queda fijo. El "_" que viaja va por delante de las letras blancas (nunca queda tapado) y por detrás del ">": el SVG tiene tres capas que se mueven juntas (letras con la ventana · "_" recortado solo por el borde izquierdo · ">" con la ventana).
 - Al abrir el menú, el ">" gira y apunta hacia abajo y las dos barras de arriba bajan sin cambiar de largo y se funden en la de abajo (150 ms), que queda como un "_" titilando (326 / 326). Al cerrar suben a su lugar. Al cerrar, todo vuelve en 150 ms y el "≡" queda fijo. Con mouse, el hover pone las tres barras al 100 %. El botón tiene aria-label "Menú de SEKURECO", aria-expanded y title "Menú", y un área táctil invisible de 44 px como mínimo. Se cierra con Esc, tocando afuera o eligiendo una sección. Abrirlo durante la secuencia la completa de una.
 - **Menú (índice, no copia del contenido):** con mouse se abre con el puntero 120 ms sobre el ">≡" visible y se cierra 300 ms después de salir de botón + menú; un click lo deja fijado. Al abrir se ven solo los 4 ítems, ningún árbol. Cada ítem abre su árbol estilo terminal (`raíz/` + ramas ├ └, línea por línea a ~30 ms), uno solo a la vez: con mouse y lugar, a la derecha en su propia capa (hover 150 ms o click; la lista no se mueve; cruzar otro ítem < 150 ms no cambia el árbol; fuera del ítem y su árbol 300 ms, se cierra); sin hover o sin lugar, acordeón debajo (el tap en el ítem no navega, navega la raíz). Teclado: ↑↓, → / Enter entra, ← vuelve, Esc cierra y devuelve el foco. Contacto lleva whatsapp, contacto@ y seguridad@, cada uno con un botón "copiar" (también en la sección), que sin JS ni portapapeles no se muestra.
@@ -126,7 +131,7 @@ invertido, es el ">" de terminal que aparece en el sitio.
 
 **Indicador de carga:** `SK.cargando(contenedor)` (en `assets/main.js`) inserta el escudo bajo fuego, solo, sin SEKURECO, y devuelve una función para quitarlo. Usarlo para cualquier cosa que cargue (por ejemplo, el envío de un formulario). Tamaño con `--sk-size` en el contenedor.
 
-**Hero:** cuatro bloques, en este orden visual, de DOM y de tabulación, igual en celular y escritorio: (1) selector "¿Para quién es?" chico, arriba del H1; (2) H1 + bajada; (3) contacto como un grupo: botón de WhatsApp y, pegado debajo (13 px), "o por mail a…", con 55 px antes (34 en celular); (4) link discreto "servicios ↓" al pie (89 px después; 55 en celular), con flecha SVG que baja 2 px en hover (quieta con reducir movimiento). Todo en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
+**Hero:** cuatro bloques, en este orden visual, de DOM y de tabulación, igual en celular y escritorio: (1) selector "¿Para quién es?" chico, arriba del H1 (hoy oculto, ver Audiencias); (2) antetítulo, H1 "La seguridad no se improvisa.", segunda línea destacada "Se diseña, se ejecuta y se controla." (clase `svc-t`), bajada y la línea ANALIZAR / DISEÑAR / EJECUTAR / CONTROLAR / MEJORAR; (3) contacto como un grupo: botón de WhatsApp y, pegado debajo (13 px), "o por mail a…", con 55 px antes (34 en celular); (4) link discreto "servicios ↓" al pie (89 px después; 55 en celular), con flecha SVG que baja 2 px en hover (quieta con reducir movimiento). Todo en la columna áurea (61,8 %); la derecha queda libre a la espera de fotos reales del banco de pruebas o de instalaciones (hay un comentario en `index.html` marcando el lugar). El visor de cámara animado se sacó por poco serio.
 
 ## Audiencias: Empresa | Hogar
 
@@ -142,23 +147,26 @@ El selector del hero ("¿Para quién es?") cambia los textos: mismos servicios, 
   `?para=` con `history.replaceState` (no recarga ni scrollea). Fundido de 140 ms; nada con
   reducir movimiento.
 - Sin JS: se ve Empresa y el selector no aparece. `<head>`, OG y JSON-LD van siempre con Empresa.
-- Texto nuevo: siempre en las dos versiones, o igual para las dos (como "Cómo elegimos").
+- Texto nuevo: siempre en las dos versiones, o igual para las dos.
+- Con el contenido institucional (regla 15) no hay textos distintos por audiencia: el selector está
+  **oculto** con el atributo `hidden` en `index.html` (el CSS lo respeta: `.js .aud:not([hidden])`).
+  El código sigue: `theme.js` pone `data-audiencia` y `main.js` maneja los botones. Para volver a
+  mostrarlo, sacar `hidden`.
 
 ## Contenido y datos de contacto
 
-- **WhatsApp:** +54 9 11 6546-1966, link `https://wa.me/5491165461966?text=…` con el texto prellenado según la audiencia: "Hola SEKURECO, quiero hacer una consulta para mi empresa sobre " o "…para mi casa sobre " (codificado; dos links, uno visible). Se muestra "11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
-- **Equipos que usamos:** alarmas cableadas, cámaras IP con análisis y cableado estructurado. Marcas y modelos concretos no se escriben en el repo (regla 7). El sitio habla de criterios (cable antes que inalámbrico, equipos actualizados y cerrados, cámaras en red aislada, nada sin probar), nunca de marcas, modelos ni países.
-- **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/ y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
+- **WhatsApp:** +54 11 6546-1966, link `https://wa.me/5491165461966` (sin texto prellenado). Se muestra "+54 11 6546-1966" con la etiqueta WhatsApp; "copiar" copia `+5491165461966`. Es el botón principal del hero (el mail queda como alternativa debajo), va primero en Contacto y es la primera línea del árbol de Contacto del menú (en index, 404 y privacidad). Sin `target="_blank"`: en el celular abre la app.
+- **Equipos que usamos:** alarmas cableadas, cámaras IP con análisis y cableado estructurado. Marcas y modelos concretos no se escriben en el repo (regla 7). El sitio habla en genérico, nunca de marcas, modelos ni países.
+- **SEO y compartir:** description, canonical, theme-color, Open Graph y Twitter en el `<head>`; `sitemap.xml` (/, las 9 de servicio y /privacidad) y la línea Sitemap en `robots.txt`. JSON-LD de tipo Organization en el index (sin dirección ni horarios): un `<script type="application/ld+json">` no es ejecutable y no viola la CSP (probado en Chromium y Firefox con un control positivo). Ningún otro `<script>` inline.
 - **/privacidad:** la sirve Pages desde `privacidad.html`; link en el footer de todas las páginas. Si cambia lo que guarda el navegador (localStorage/sessionStorage) o se agrega un formulario, hay que actualizarla y cambiar la fecha.
-- **Páginas de servicio (`/servicios/<slug>/`):** una por tarjeta del inicio (la tarjeta entera es un solo `<a>` con "Ver detalle"). Estructura fija: encabezado con bajada, Qué incluye, Para quién (dos bloques, Empresas y Hogares, siempre visibles: no usan el selector), Cómo trabajamos (5 pasos: relevamiento → propuesta → instalación → entrega, prueba y capacitación → abono mensual), Por qué SEKURECO (solo diferenciales reales), 4 a 6 preguntas con `<details>` nativo, contacto (WhatsApp + contacto@) y los otros servicios. Texto neutro de audiencia; el header sí sigue a `data-audiencia`. Un dato que no existe (plazos, costo del relevamiento, qué cubre el abono, horarios, garantías) va como `[COMPLETAR: …]` visible, nunca inventado. Sin marcas, modelos ni detalles técnicos (regla 7). `tools/build.py` y `tools/apply.py` las incluyen.
+- **Páginas de servicio (`/servicios/<slug>/`):** una por tarjeta del inicio (la tarjeta entera es un solo `<a>` con "Ver detalle"; su bajada es una oración del primer párrafo de la página). Estructura fija: título, bajada (si el contenido la trae), cuerpo con sus listas, "Nuestro método" (los 5 pasos), contacto (WhatsApp + contacto@), los otros 8 servicios y "Volver al inicio". Todo el texto sale del archivo de contenido (regla 15); sin marcas, modelos ni detalles técnicos (regla 7). `tools/build.py` y `tools/apply.py` las incluyen.
 
 ## Pendientes y decisiones abiertas
 
 - **Marca:** SECUREKO está registrada en INPI (clase 45) por un tercero, que también tiene sekureco.com.ar. Hay que consultar con un agente de marcas antes de invertir más en la identidad.
-- **Contenido que falta:** sección "Para quién", "Nosotros", preguntas frecuentes, fotos reales del banco de pruebas o instalaciones.
-- **Material de capacitación:** el sitio promete una presentación para que el equipo cliente se quede; todavía no existe.
-- **Páginas de servicio:** completar los `[COMPLETAR: …]` (plazos, costo del relevamiento, qué cubre el abono, horarios de monitoreo, garantías, material de capacitación). `_headers` no tiene regla para `/servicios/*`: falta `Cache-Control: no-cache` como la de `/privacidad`, para que el HTML siempre pida el CSS/JS de su versión.
-- **Selector Empresa | Hogar en las páginas de servicio:** hoy muestran los dos bloques (Empresas y Hogares); extender el selector del hero para que cada página hable en un solo registro, como el inicio.
+- **Contenido que falta:** fotos reales del banco de pruebas o instalaciones. Cualquier texto nuevo, con aprobación de Gonzalo (regla 15).
+- **Páginas de servicio:** `_headers` no tiene regla para `/servicios/*`: falta `Cache-Control: no-cache` como la de `/privacidad`, para que el HTML siempre pida el CSS/JS de su versión.
+- **Selector Empresa | Hogar:** oculto (atributo `hidden` en `index.html`). Vuelve cuando haya textos por audiencia aprobados por Gonzalo (regla 15).
 - **Demo en vivo con la cámara del visitante:** desde el menú, con aviso previo y consentimiento explícito. Requiere actualizar `/privacidad` y relajar `camera=()` de la Permissions-Policy en `_headers` solo para esa página.
 - **Mejoras propuestas y no implementadas:** header compacto al scrollear, respuesta inmediata al tocar, intro corta para quien vuelve. Ahora que hay más páginas: View Transitions y precarga con Speculation Rules (por header, para respetar la CSP).
 - **No hacer:** fade-in al scrollear, parallax, contadores animados sin datos reales, cursor personalizado, testimonios o logos de clientes que no existan.
