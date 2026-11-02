@@ -1,4 +1,5 @@
-"""Mete lo generado en tools/build/ dentro de index.html, 404.html y assets/styles.css.
+"""Mete lo generado en tools/build/ dentro de index.html (intro y header), 404.html, privacidad.html y
+servicios/*/index.html (header) y assets/styles.css.
 Uso: python3 tools/apply.py (después de intro.py y header.py)"""
 import re
 from pathlib import Path
@@ -12,7 +13,9 @@ intro_css = (B / "intro.css").read_text()
 shield = (B / "header-shield.svg").read_text()
 wm = (B / "header-wordmark.svg").read_text()
 
-for name in ["index.html", "404.html"]:
+PAGINAS = ["index.html", "404.html", "privacidad.html"] + sorted(
+    p.relative_to(ROOT).as_posix() for p in (ROOT / "servicios").glob("*/index.html"))
+for name in PAGINAS:
     p = ROOT / name
     h = p.read_text()
     if name == "index.html":

@@ -93,7 +93,7 @@ h1, h2, h3 {
 p { margin: 0; }
 /* párrafos sin huérfanas donde el navegador lo soporta; si no, se ve como siempre */
 p, dd { text-wrap: pretty; }
-.services dt { text-wrap: balance; }
+.svc-t { text-wrap: balance; }
 
 a { color: inherit; }
 
@@ -243,27 +243,50 @@ a { color: inherit; }
   margin-bottom: 0;
 }
 
+/* cada tarjeta es un solo link (<a>) a su página en /servicios/<slug>/: toda la tarjeta se puede
+   tocar y el foco la rodea entera. "Ver detalle" lleva el ">" de la marca, en el acento */
 .services {
   margin: 0;
+  padding: 0;
+  list-style: none;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 var(--sp4);
 }
-.services > div {
+.services > li { border-top: 2px solid var(--fg); }
+.svc {
+  display: block;
   padding: var(--sp3) 0 var(--sp4);
-  border-top: 2px solid var(--fg);
+  color: inherit;
+  text-decoration: none;
 }
-.services dt {
+.svc:focus-visible { outline-offset: 4px; }
+.svc-t {
+  display: block;
   font-stretch: 125%;
   font-weight: 600;
   font-size: 1.35rem;
   line-height: 1.25;
+  transition: color .2s;
 }
-.services dd {
-  margin: var(--sp2) 0 0;
+.svc:hover .svc-t { color: var(--accent); }
+.svc-d {
+  display: block;
+  margin-top: var(--sp2);
   color: var(--muted);
   max-width: 44ch;
+  text-wrap: pretty;
 }
+.svc-more {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--sp2);
+  color: var(--accent);
+  font-size: .9375rem;
+  font-weight: 500;
+}
+.svc-more .prompt { width: .6em; height: .6em; margin-right: .4em; transition: transform .2s; }
+.svc:hover .svc-more .prompt { transform: translateX(2px); }
 
 .criteria-list { display: grid; gap: var(--sp4); }
 .criteria-list > div {
@@ -370,6 +393,8 @@ a { color: inherit; }
   .aud-btn { transition: none; }
   .hero-next-i { transition: none; }
   .hero-next:hover .hero-next-i { transform: none; }
+  .svc-t, .svc-more .prompt { transition: none; }
+  .svc:hover .svc-more .prompt { transform: none; }
 }
 
 /* ---------- grupos de servicios ---------- */
@@ -380,6 +405,119 @@ a { color: inherit; }
   font-weight: 600;
   color: var(--accent);
   margin-bottom: var(--sp2);
+}
+
+/* ---------- páginas de servicio (/servicios/<slug>/) ---------- */
+
+/* un nivel por debajo del inicio: títulos un paso más chicos en la escala (√φ) y secciones con un
+   paso menos de aire (55–89 arriba, 34–55 abajo), siempre en la grilla áurea (.sec-grid) */
+.svc-hero {
+  background: var(--hero);
+  color: var(--mist);
+  padding: clamp(var(--sp5), 7vw, var(--sp6)) 0 clamp(var(--sp4), 5vw, var(--sp5));
+}
+.svc-hero h1 { font-size: clamp(2.18rem, 4.2vw, 3.54rem); max-width: 16ch; }
+.svc-hero .lead { margin-top: var(--sp3); max-width: 52ch; }
+.svc-crumb { margin-bottom: var(--sp3); color: #C4D1D6; font-size: .9375rem; }
+.svc-crumb a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238, 243, 243, .35); transition: border-color .2s; }
+.svc-crumb a:hover { border-bottom-color: var(--teal-light); }
+.svc-crumb .sep { margin: 0 .5em; opacity: .6; }
+.svc-page .section { padding: clamp(var(--sp5), 7vw, var(--sp6)) 0 clamp(var(--sp4), 5vw, var(--sp5)); }
+.svc-page .section h2 { font-size: clamp(1.72rem, 2.6vw, 2.18rem); }
+.svc-page .sec-body > p { max-width: 60ch; }
+.svc-page .sec-body > p + p, .svc-page .sec-body > p + ul, .svc-page .sec-body > p + ol { margin-top: var(--sp3); }
+/* separadores finos que funcionan en claro y oscuro */
+.svc-page { --rule: rgba(86, 103, 122, .35); }
+
+/* listas (qué incluye, por qué SEKURECO): un "_" teal como viñeta, el cursor de la marca */
+.svc-list { margin: 0; padding: 0; list-style: none; max-width: 60ch; }
+.svc-list > li { position: relative; padding: var(--sp2) 0 var(--sp2) calc(.6em + var(--sp2)); border-top: 1px solid var(--rule); }
+.svc-list > li::before { content: ""; position: absolute; left: 0; top: calc(var(--sp2) + .78em); width: .6em; height: .14em; background: var(--accent); }
+.svc-list > li:last-child { border-bottom: 1px solid var(--rule); }
+.svc-list strong { font-weight: 600; }
+
+/* para quién: dos bloques, mismo servicio en dos registros */
+.who { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp4); }
+.who > div { padding-top: var(--sp3); border-top: 2px solid var(--fg); }
+.who h3 { font-size: 1.35rem; }
+.who p { margin-top: var(--sp2); color: var(--muted); }
+
+/* cómo trabajamos: pasos numerados (01, 02, …) en el acento */
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: paso; max-width: 60ch; }
+.steps > li {
+  counter-increment: paso;
+  display: grid;
+  grid-template-columns: 2.4ch minmax(0, 1fr);
+  gap: 0 var(--sp3);
+  padding: var(--sp3) 0;
+  border-top: 1px solid var(--rule);
+}
+.steps > li:last-child { border-bottom: 1px solid var(--rule); }
+.steps > li::before {
+  content: counter(paso, decimal-leading-zero);
+  grid-row: 1 / span 2;
+  color: var(--accent);
+  font-stretch: 125%;
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.steps h3 { font-size: 1.35rem; }
+.steps p { margin-top: 8px; color: var(--muted); }
+
+/* preguntas frecuentes: <details> nativo; el ">" de la marca gira al abrir */
+.faq { max-width: 60ch; border-top: 1px solid var(--rule); }
+.faq:last-child { border-bottom: 1px solid var(--rule); }
+.faq > summary {
+  display: flex;
+  align-items: baseline;
+  gap: .6em;
+  padding: var(--sp2) 0;
+  list-style: none;
+  font-weight: 600;
+  font-stretch: 112%;
+  cursor: pointer;
+  transition: color .2s;
+}
+.faq > summary::-webkit-details-marker { display: none; }
+.faq > summary .prompt { flex: none; margin: 0; width: .6em; height: .6em; color: var(--accent); transition: transform .2s; }
+.faq[open] > summary .prompt { transform: rotate(90deg); }
+.faq > summary:hover { color: var(--accent); }
+.faq > summary:focus-visible { outline-offset: 2px; }
+.faq > p { padding: 0 0 var(--sp3) calc(.6em + .6em); color: var(--muted); max-width: 56ch; }
+.faq > p + p { padding-top: 0; margin-top: calc(-1 * var(--sp3) + var(--sp2)); }
+
+/* contacto en la página de servicio: la misma franja que en el inicio, con menos aire al pie
+   porque después vienen los otros servicios */
+.svc-page .contact { padding-bottom: clamp(var(--sp5), 8vw, var(--sp6)); }
+.svc-page .contact h2 { font-size: clamp(1.9rem, 3.4vw, 2.78rem); }
+
+/* otros servicios y volver al inicio */
+.others { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp4); }
+.others h3 { font-size: 1rem; font-weight: 600; color: var(--accent); margin-bottom: var(--sp2); }
+.others ul { margin: 0; padding: 0; list-style: none; }
+.others li + li { margin-top: 6px; }
+.others a { text-decoration: none; border-bottom: 1px solid var(--rule); transition: border-color .2s; }
+.others a:hover { border-bottom-color: var(--accent); }
+.others [aria-current="page"] { color: var(--muted); }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--sp5);
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.back:hover { color: var(--fg); }
+.back .prompt { width: .6em; height: .6em; margin: 0; transform: rotate(180deg); }
+
+@media (max-width: 600px) {
+  .who, .others { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-crumb a, .faq > summary, .faq > summary .prompt, .others a, .back { transition: none; }
 }
 
 /* ---------- selector de tema ---------- */

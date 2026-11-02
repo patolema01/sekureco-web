@@ -7,10 +7,12 @@ Sin framework ni dependencias. El build de Pages (`python3 tools/build.py`, sali
 
 ```
 index.html            página principal
+servicios/<slug>/     una página de detalle por servicio (index.html en cada carpeta)
 404.html              página de error
 favicon.svg
 _headers              headers de seguridad (CSP, HSTS, etc.) que aplica Cloudflare Pages
 robots.txt
+sitemap.xml           inicio, privacidad y las páginas de servicio
 .well-known/security.txt
 assets/
   styles.css          único CSS

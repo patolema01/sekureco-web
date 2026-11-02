@@ -41,8 +41,8 @@
   var ov = document.getElementById("intro");
   var root = document.documentElement;
   if (!root.classList.contains("intro")) return;
-  // páginas sin intro (404): theme.js no lo sabe y marca "intro" en la primera visita; sin esto el
-  // logo del header quedaba oculto. Va directo al estado final.
+  // red de seguridad: theme.js solo marca "intro" en el inicio; si aun así una página no tiene la
+  // intro en el HTML, va directo al estado final (sin esto el logo del header quedaba oculto).
   if (!ov) {
     root.classList.remove("intro");
     root.classList.add("hdr-done");
